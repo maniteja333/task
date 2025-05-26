@@ -2,8 +2,7 @@ param virtualNetworkName string
 param AkssubnetName string
 param AppgwsubnetName string
 param PlesubnetName string
-param storageAccountName string 
-param containerName string 
+param Plesubnetid string = '/subscriptions/58d256cb-83ad-4305-895e-3e58664a8daa/resourceGroups/randomapp-rg/providers/Microsoft.Network/virtualNetworks/aks-vnet/subnets/ple-subnet'
 
 
 module VirtualNetworkModule './NetworkProvisioning/VirtualNetwork.bicep' = {
@@ -19,11 +18,7 @@ module VirtualNetworkModule './NetworkProvisioning/VirtualNetwork.bicep' = {
 module storageModule './templates/storageaccount.bicep' = {
   name: 'storageDeployment'
   params: {
-    storageAccountName: storageAccountName
-    skuName: 'Standard_LRS'
-    kind: 'StorageV2'
-    accessTier: 'Hot'
-    containerName: containerName
+   plesubnetid: Plesubnetid
   }
 }
 
