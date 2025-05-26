@@ -1,6 +1,6 @@
-param virtualNetworkName string
-param AkssubnetName string
-param AppgwsubnetName string
+param virtualNetworkName string = 'aks-vnet'
+param AkssubnetName string = 'aks-subnet'
+param AppgwsubnetName string = 'appgw-subnet'
 
 
 module VirtualNetworkModule './NetworkProvisioning/VirtualNetwork.bicep' = {
