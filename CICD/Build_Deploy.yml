@@ -12,13 +12,16 @@ steps:
   inputs:
     versionSpec: '3.x'
 
-- task: Docker@2
+- task: AzureCLI@2
+  displayName: 'Get AKS credentials'
   inputs:
-    command: buildAndPush
-    repository: appcer.azurecr.io/myapp   # ACR login server + repo name
-    containerRegistry: 'acr-sc'           # Your Azure DevOps ACR service connection
-    dockerfile: 'CICD/Dockerfile'         # ✅ Direct path to Dockerfile
-    tags: latest2
+    azureSubscription: 'aks-sc'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+        docker build -t appcer.azurecr.io/myapp:latest2 
+        az acr login --name appcer
+        docker push appcer.azurecr.io/myapp:latest2    
 
 - task: AzureCLI@2
   displayName: 'Get AKS credentials'
