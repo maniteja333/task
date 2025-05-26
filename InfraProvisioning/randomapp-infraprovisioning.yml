@@ -26,8 +26,6 @@ stages:
                           --parameters virtualNetworkName="$(virtualNetworkName)" \
                                       AkssubnetName="$(AkssubnetName)" \
                                       AppgwsubnetName="$(AppgwsubnetName)" \
-                                      PlesubnetName="$(PlesubnetName)" \
-                                      storageAccountName="$(storageAccountName)" \
-                                      containerName="$(containerName)"
+                                      PlesubnetName="$(PlesubnetName)" 
                             
                           
