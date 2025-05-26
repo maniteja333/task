@@ -23,8 +23,8 @@ stages:
                           --resource-group "randomapp-rg" \
                           --mode Incremental \
                           --template-file "$(System.DefaultWorkingDirectory)/InfraProvisioning/main.bicep" \
-                          --parameters  virtualNetworkName="$(virtualNetworkName)" \
-                            AkssubnetName="$(AkssubnetName)" \
-                            AppgwsubnetName=$(AppgwsubnetName)
+                          --parameters virtualNetworkName="$(virtualNetworkName)" \
+                                      AkssubnetName="$(AkssubnetName)" \
+                                      AppgwsubnetName="$(AppgwsubnetName)"
                             
                           
