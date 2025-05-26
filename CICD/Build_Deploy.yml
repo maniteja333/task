@@ -27,22 +27,22 @@ steps:
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      az aks get-credentials --resource-group randomapp-rg --name aks-cluster --overwrite-existing
+      az aks get-credentials --resource-group randomapp-rg --name aks-cluster --overwrite-existing --file kubeconfig
 
+# - task: Kubernetes@1
+#   displayName: 'Deploy to AKS'
+#   inputs:
+#     connectionType: 'None'
+#     command: apply
+#     useConfigurationFile: true
+#     configuration: 'CICD/deployment.yml'
 - task: Kubernetes@1
   displayName: 'Deploy to AKS'
   inputs:
-    connectionType: 'None'
-    command: apply
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceEndpoint: 'kube-sc'
+    command: 'apply'
     useConfigurationFile: true
     configuration: 'CICD/deployment.yml'
-- task: Kubernetes@1
-  displayName: 'Deploy to AKS'
-  inputs:
-    connectionType: 'Azure Resource Manager'
-    azureSubscriptionEndpoint: 'aks-sc'
-    azureResourceGroup: 'randompapp-rg'
-    kubernetesCluster: 'aks-cluster'
-    command: apply
-    useConfigurationFile: true
-    configuration: 'CICD/deployment.yml'
+
+
