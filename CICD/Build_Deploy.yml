@@ -20,13 +20,19 @@ steps:
 #     dockerfile: '**/Dockerfile'
 #     tags: latest
 
-- task: Kubernetes@1
+- task: AzureCLI@2
+  displayName: 'Get AKS credentials'
   inputs:
-    connectionType: 'Azure Resource Manager'
-    azureSubscriptionEndpoint: 'aks-sc'
-    azureResourceGroup: 'ramdomapp-rg'
-    kubernetesCluster: 'aks-cluster'
-    namespace: 'default'
+    azureSubscription: 'aks-sc'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az aks get-credentials --resource-group randomapp-rg --name aks-cluster --overwrite-existing
+
+- task: Kubernetes@1
+  displayName: 'Deploy to AKS'
+  inputs:
+    connectionType: 'None'
     command: apply
     useConfigurationFile: true
     configuration: 'CICD/deployment.yaml'
