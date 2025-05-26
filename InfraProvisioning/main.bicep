@@ -2,6 +2,8 @@ param virtualNetworkName string
 param AkssubnetName string
 param AppgwsubnetName string
 param PlesubnetName string
+param storageAccountName string 
+param containerName string 
 
 
 module VirtualNetworkModule './NetworkProvisioning/VirtualNetwork.bicep' = {
@@ -13,3 +15,15 @@ module VirtualNetworkModule './NetworkProvisioning/VirtualNetwork.bicep' = {
     PlesubnetName: PlesubnetName
   }
 }
+
+module storageModule './templates/storageaccount.bicep' = {
+  name: 'storageDeployment'
+  params: {
+    storageAccountName: storageAccountName
+    skuName: 'Standard_LRS'
+    kind: 'StorageV2'
+    accessTier: 'Hot'
+    containerName: containerName
+  }
+}
+
