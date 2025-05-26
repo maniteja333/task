@@ -16,6 +16,6 @@ steps:
   inputs:
     command: buildAndPush
     repository: appcer.azurecr.io/myapp   # This is the full ACR login server + repo name
-    containerRegistry: 'aks-sc'          # Your service connection name
+    containerRegistry: 'acr-sc'          # Your service connection name
     dockerfile: '**/Dockerfile'
     tags: latest
