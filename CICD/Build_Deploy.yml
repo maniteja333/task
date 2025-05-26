@@ -24,8 +24,8 @@ steps:
   inputs:
     connectionType: 'Azure Resource Manager'
     azureSubscriptionEndpoint: 'aks-sc'
-    azureResourceGroup: 'aks-cluster'
-    kubernetesCluster: 'randomapp-rg'
+    azureResourceGroup: 'ramdomapp-rg'
+    kubernetesCluster: 'aks-cluster'
     namespace: 'default'
     command: apply
     useConfigurationFile: true
