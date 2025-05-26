@@ -19,9 +19,11 @@ steps:
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
-        docker build -t appcer.azurecr.io/myapp:latest2 .
-        az acr login --name appcer
-        docker push appcer.azurecr.io/myapp:latest2    
+      az acr login --name appcer
+      cd cicd
+      docker build -t appcer.azurecr.io/myapp:latest2 .
+      docker push appcer.azurecr.io/myapp:latest2
+ 
 
 - task: AzureCLI@2
   displayName: 'Get AKS credentials'
