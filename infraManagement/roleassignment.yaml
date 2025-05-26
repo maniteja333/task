@@ -1,0 +1,54 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: Assign_RBAC
+  displayName: Assign Azure RBAC Roles
+  jobs:
+  - job: assign_roles
+    steps:
+    - task: AzureCLI@2
+      displayName: 'Assign RBAC roles'
+      inputs:
+        azureSubscription: 'aks-sc'   # Service connection name
+        scriptType: 'pscore'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+
+          # Variables
+          $subscriptionId = "$(az account show --query id -o tsv)"
+          $acrName = 'appcer'
+          $acrScope = "/subscriptions/$subscriptionId/resourceGroups/randomapp-rg/providers/Microsoft.ContainerRegistry/registries/$acrName"
+          $aksName = 'randomapp-rg'
+          $aksRg = 'aks-cluster'
+
+          Write-Host "==> Getting AKS kubelet identity..."
+          $kubeletPrincipalId = az aks show --name $aksName --resource-group $aksRg `
+            --query identityProfile.kubeletidentity.objectId -o tsv
+
+          Write-Host "==> Assigning AcrPull to AKS kubelet MI..."
+          az role assignment create --assignee-object-id $kubeletPrincipalId `
+            --role AcrPull --scope $acrScope --assignee-principal-type ServicePrincipal
+
+          Write-Host "==> Getting DevOps service principal..."
+          $devopsSpId = "$(az ad signed-in-user show --query objectId -o tsv)"  # fallback if needed
+
+          # Get the actual SP behind the service connection
+          $spId = az ad sp list --display-name 'aks-sc' --query "[0].objectId" -o tsv
+
+          if (!$spId) {
+            Write-Host "##[error]Could not find service principal for 'aks-sc'"
+            exit 1
+          }
+
+          Write-Host "==> Assigning 'Azure Kubernetes Service RBAC Cluster Admin' to pipeline SP..."
+          $aksScope = "/subscriptions/$subscriptionId/resourceGroups/$aksRg/providers/Microsoft.ContainerService/managedClusters/$aksName"
+
+          az role assignment create --assignee-object-id $spId `
+            --role "Azure Kubernetes Service RBAC Cluster Admin" `
+            --scope $aksScope --assignee-principal-type ServicePrincipal
+
+          Write-Host "Done: RBAC roles assigned successfully"
