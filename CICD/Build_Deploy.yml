@@ -23,7 +23,7 @@ steps:
 - task: Kubernetes@1
   inputs:
     connectionType: 'Azure Resource Manager'
-    azureSubscription: 'aks-sc'
+    azureSubscriptionEndpoint: 'aks-sc'
     azureResourceGroup: 'aks-cluster'
     kubernetesCluster: 'randomapp-rg'
     namespace: 'default'
