@@ -1,7 +1,12 @@
 param managedClusters_aks_cluster_name string 
-
+param acrName string
 @secure()
 param windowsAdminPassword string 
+
+resource acr 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' existing = {
+  name: acrName
+
+}
 
 param virtualNetworks_aks_vnet_externalid string = '/subscriptions/58d256cb-83ad-4305-895e-3e58664a8daa/resourceGroups/randomapp-rg/providers/Microsoft.Network/virtualNetworks/aks-vnet'
 param adminuser string  = 'adminuser'
@@ -67,6 +72,7 @@ resource managedClusters_aks_cluster_name_resource 'Microsoft.ContainerService/m
         enabled: false
       }
     }
+
     nodeResourceGroup: 'MC_randomapp-rg_${managedClusters_aks_cluster_name}_northeurope'
     enableRBAC: true
     supportPlan: 'KubernetesOfficial'
@@ -229,4 +235,16 @@ resource managedClusters_aks_cluster_name_aksManagedNodeOSUpgradeSchedule 'Micro
       startTime: '00:00'
     }
   }
+}
+
+resource acrPullRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid(managedClusters_aks_cluster_name_resource.id, acr.id, 'acrpull-role')
+  scope: acr
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
+    principalId: managedClusters_aks_cluster_name_resource.identity.principalId
+  }
+  dependsOn: [
+    managedClusters_aks_cluster_name_resource
+  ]
 }

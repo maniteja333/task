@@ -30,6 +30,7 @@ module AksModule './templates/aks.bicep' = {
   params: {
      managedClusters_aks_cluster_name : managedClusters_aks_cluster_name
      windowsAdminPassword : windowsAdminPassword
+     acrName:acrName
   }
 }
 
