@@ -18,7 +18,7 @@ steps:
     repository: appcer.azurecr.io/myapp   # This is the full ACR login server + repo name
     containerRegistry: 'acr-sc'          # Your service connection name
     dockerfile: '**/Dockerfile'
-    tags: latest
+    tags: latest2
 
 - task: AzureCLI@2
   displayName: 'Get AKS credentials'
