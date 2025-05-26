@@ -28,6 +28,6 @@ stages:
                                       AkssubnetName="$(AkssubnetName)" \
                                       AppgwsubnetName="$(AppgwsubnetName)" \
                                       PlesubnetName="$(PlesubnetName)" \
-                                      windowsAdminPassword="StrongP@ssword123" 
+                                      windowsAdminPassword="$(windowsAdminPassword)" 
                             
                           
