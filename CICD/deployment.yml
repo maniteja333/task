@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: appcer.azurecr.io/random-string-api:latest2
+        image: appcer.azurecr.io/myapp:latest
         ports:
         - containerPort: 80
 ---
@@ -23,7 +23,7 @@ kind: Service
 metadata:
   name: random-string-service
   annotations:
-    service.beta.kubernetes.io/azure-load-balancer-internal: "true"  # 👈 Makes it internal
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"  # Makes it internal
 spec:
   selector:
     app: random-string
