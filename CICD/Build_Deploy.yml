@@ -20,9 +20,10 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
       az acr login --name appcer
-      cd cicd
+      cd $(Build.SourcesDirectory)/cicd
       docker build -t appcer.azurecr.io/myapp:latest2 .
       docker push appcer.azurecr.io/myapp:latest2
+
  
 
 - task: AzureCLI@2
