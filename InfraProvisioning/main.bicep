@@ -1,6 +1,7 @@
 param virtualNetworkName string
 param AkssubnetName string
 param AppgwsubnetName string
+param PlesubnetName string
 
 
 module VirtualNetworkModule './NetworkProvisioning/VirtualNetwork.bicep' = {
@@ -9,5 +10,6 @@ module VirtualNetworkModule './NetworkProvisioning/VirtualNetwork.bicep' = {
     virtualNetworkName: virtualNetworkName
     AkssubnetName: AkssubnetName
     AppgwsubnetName: AppgwsubnetName
+    PlesubnetName: PlesubnetName
   }
 }
