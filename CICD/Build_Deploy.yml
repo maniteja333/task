@@ -19,3 +19,14 @@ steps:
     containerRegistry: 'acr-sc'          # Your service connection name
     dockerfile: '**/Dockerfile'
     tags: latest
+
+- task: Kubernetes@1
+  inputs:
+    connectionType: 'Azure Resource Manager'
+    azureSubscription: 'aks-sc'
+    azureResourceGroup: 'aks-cluster'
+    kubernetesCluster: 'randomapp-rg'
+    namespace: 'default'
+    command: apply
+    useConfigurationFile: true
+    configuration: 'CICD/deployment.yaml'
