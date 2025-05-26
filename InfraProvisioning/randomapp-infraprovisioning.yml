@@ -22,7 +22,7 @@ stages:
                           az deployment group create \
                           --resource-group "randomapp-rg" \
                           --mode Incremental \
-                          --template-file "$(System.DefaultWorkingDirectory)/infraProvisioning/main.bicep" \
+                          --template-file "$(System.DefaultWorkingDirectory)/InfraProvisioning/main.bicep" \
                           --parameters  virtualNetworkName="$(virtualNetworkName)" \
                             AkssubnetName="$(AkssubnetName)" \
                             AppgwsubnetName=$(AppgwsubnetName)
