@@ -1,5 +1,8 @@
 param managedClusters_aks_cluster_name string 
 
+@secure()
+param windowsAdminPassword string 
+
 param virtualNetworks_aks_vnet_externalid string = '/subscriptions/58d256cb-83ad-4305-895e-3e58664a8daa/resourceGroups/randomapp-rg/providers/Microsoft.Network/virtualNetworks/aks-vnet'
 param adminuser string  = 'adminuser'
 resource managedClusters_aks_cluster_name_resource 'Microsoft.ContainerService/managedClusters@2025-02-01' = {
@@ -50,6 +53,7 @@ resource managedClusters_aks_cluster_name_resource 'Microsoft.ContainerService/m
     ]
     windowsProfile: {
       adminUsername: adminuser
+      adminPassword: windowsAdminPassword
       enableCSIProxy: true
     }
     servicePrincipalProfile: {

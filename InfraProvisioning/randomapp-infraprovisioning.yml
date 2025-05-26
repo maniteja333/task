@@ -27,6 +27,7 @@ stages:
                           --parameters virtualNetworkName="$(virtualNetworkName)" \
                                       AkssubnetName="$(AkssubnetName)" \
                                       AppgwsubnetName="$(AppgwsubnetName)" \
-                                      PlesubnetName="$(PlesubnetName)" 
+                                      PlesubnetName="$(PlesubnetName)" \
+                                      windowsAdminPassword="StrongP@ssword123" 
                             
                           
