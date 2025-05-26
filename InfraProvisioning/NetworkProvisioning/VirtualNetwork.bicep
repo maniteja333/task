@@ -17,9 +17,17 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
 
   resource subnet1 'subnets' = {
     name: AkssubnetName
-    properties: {
-      addressPrefix: '10.0.0.0/24'
-    }  }
+        properties: {
+          addressPrefix: '10.0.0.0/24'
+          delegations: [
+            {
+              name: 'aksDelegation'
+              properties: {
+                serviceName: 'Microsoft.ContainerService/managedClusters'
+              }
+            }
+          ]
+        }  }
 
   resource subnet2 'subnets' = {
     name: AppgwsubnetName

@@ -1,0 +1,228 @@
+param managedClusters_aks_cluster_name string 
+
+param virtualNetworks_aks_vnet_externalid string = '/subscriptions/58d256cb-83ad-4305-895e-3e58664a8daa/resourceGroups/randomapp-rg/providers/Microsoft.Network/virtualNetworks/aks-vnet'
+param adminuser string  = 'adminuser'
+resource managedClusters_aks_cluster_name_resource 'Microsoft.ContainerService/managedClusters@2025-02-01' = {
+  name: managedClusters_aks_cluster_name
+  location: 'northeurope'
+  sku: {
+    name: 'Base'
+    tier: 'Free'
+  }
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    kubernetesVersion: '1.31.8'
+    dnsPrefix: '${managedClusters_aks_cluster_name}-dns'
+    agentPoolProfiles: [
+      {
+        name: 'agentpool'
+        count: 1
+        vmSize: 'Standard_D2ads_v6'
+        osDiskSizeGB: 128
+        osDiskType: 'Managed'
+        kubeletDiskType: 'OS'
+        vnetSubnetID: '${virtualNetworks_aks_vnet_externalid}/subnets/aks-subnet'
+        maxPods: 30
+        type: 'VirtualMachineScaleSets'
+        maxCount: 2
+        minCount: 1
+        enableAutoScaling: true
+        scaleDownMode: 'Delete'
+        powerState: {
+          code: 'Running'
+        }
+        orchestratorVersion: '1.31.8'
+        enableNodePublicIP: false
+        mode: 'System'
+        osType: 'Linux'
+        osSKU: 'Ubuntu'
+        upgradeSettings: {
+          maxSurge: '10%'
+        }
+        enableFIPS: false
+        securityProfile: {
+          enableVTPM: false
+          enableSecureBoot: false
+        }
+      }
+    ]
+    windowsProfile: {
+      adminUsername: adminuser
+      enableCSIProxy: true
+    }
+    servicePrincipalProfile: {
+      clientId: 'msi'
+    }
+    addonProfiles: {
+      azureKeyvaultSecretsProvider: {
+        enabled: false
+      }
+      azurepolicy: {
+        enabled: false
+      }
+    }
+    nodeResourceGroup: 'MC_randomapp-rg_${managedClusters_aks_cluster_name}_northeurope'
+    enableRBAC: true
+    supportPlan: 'KubernetesOfficial'
+    networkProfile: {
+      networkPlugin: 'azure'
+      networkPluginMode: 'overlay'
+      networkPolicy: 'none'
+      networkDataplane: 'azure'
+      loadBalancerSku: 'Standard'
+      loadBalancerProfile: {
+        managedOutboundIPs: {
+          count: 1
+        }
+        backendPoolType: 'nodeIPConfiguration'
+      }
+      podCidr: '10.244.0.0/16'
+      serviceCidr: '10.1.0.0/16'
+      dnsServiceIP: '10.1.0.10'
+      outboundType: 'loadBalancer'
+      podCidrs: [
+        '10.244.0.0/16'
+      ]
+      serviceCidrs: [
+        '10.1.0.0/16'
+      ]
+      ipFamilies: [
+        'IPv4'
+      ]
+    }
+    autoScalerProfile: {
+      'balance-similar-node-groups': 'false'
+      'daemonset-eviction-for-empty-nodes': false
+      'daemonset-eviction-for-occupied-nodes': true
+      expander: 'random'
+      'ignore-daemonsets-utilization': false
+      'max-empty-bulk-delete': '10'
+      'max-graceful-termination-sec': '600'
+      'max-node-provision-time': '15m'
+      'max-total-unready-percentage': '45'
+      'new-pod-scale-up-delay': '0s'
+      'ok-total-unready-count': '3'
+      'scale-down-delay-after-add': '10m'
+      'scale-down-delay-after-delete': '10s'
+      'scale-down-delay-after-failure': '3m'
+      'scale-down-unneeded-time': '10m'
+      'scale-down-unready-time': '20m'
+      'scale-down-utilization-threshold': '0.5'
+      'scan-interval': '10s'
+      'skip-nodes-with-local-storage': 'false'
+      'skip-nodes-with-system-pods': 'true'
+    }
+    autoUpgradeProfile: {
+      upgradeChannel: 'patch'
+      nodeOSUpgradeChannel: 'NodeImage'
+    }
+    disableLocalAccounts: false
+    securityProfile: {
+      imageCleaner: {
+        enabled: true
+        intervalHours: 168
+      }
+      workloadIdentity: {
+        enabled: true
+      }
+    }
+    storageProfile: {
+      diskCSIDriver: {
+        enabled: true
+      }
+      fileCSIDriver: {
+        enabled: true
+      }
+      snapshotController: {
+        enabled: true
+      }
+    }
+    oidcIssuerProfile: {
+      enabled: true
+    }
+    workloadAutoScalerProfile: {}
+    metricsProfile: {
+      costAnalysis: {
+        enabled: false
+      }
+    }
+    bootstrapProfile: {
+      artifactSource: 'Direct'
+    }
+  }
+}
+
+resource managedClusters_aks_cluster_name_agentpool 'Microsoft.ContainerService/managedClusters/agentPools@2025-02-01' = {
+  parent: managedClusters_aks_cluster_name_resource
+  name: 'agentpool'
+  properties: {
+    count: 1
+    vmSize: 'Standard_D2ads_v6'
+    osDiskSizeGB: 128
+    osDiskType: 'Managed'
+    kubeletDiskType: 'OS'
+    vnetSubnetID: '${virtualNetworks_aks_vnet_externalid}/subnets/aks-subnet'
+    maxPods: 30
+    type: 'VirtualMachineScaleSets'
+    maxCount: 2
+    minCount: 1
+    enableAutoScaling: true
+    scaleDownMode: 'Delete'
+    powerState: {
+      code: 'Running'
+    }
+    orchestratorVersion: '1.31.8'
+    enableNodePublicIP: false
+    mode: 'System'
+    osType: 'Linux'
+    osSKU: 'Ubuntu'
+    upgradeSettings: {
+      maxSurge: '10%'
+    }
+    enableFIPS: false
+    securityProfile: {
+      enableVTPM: false
+      enableSecureBoot: false
+    }
+  }
+}
+
+resource managedClusters_aks_cluster_name_aksManagedAutoUpgradeSchedule 'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-02-01' = {
+  parent: managedClusters_aks_cluster_name_resource
+  name: 'aksManagedAutoUpgradeSchedule'
+  properties: {
+    maintenanceWindow: {
+      schedule: {
+        weekly: {
+          intervalWeeks: 1
+          dayOfWeek: 'Sunday'
+        }
+      }
+      durationHours: 8
+      utcOffset: '+00:00'
+      startDate: '2025-05-27'
+      startTime: '00:00'
+    }
+  }
+}
+
+resource managedClusters_aks_cluster_name_aksManagedNodeOSUpgradeSchedule 'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-02-01' = {
+  parent: managedClusters_aks_cluster_name_resource
+  name: 'aksManagedNodeOSUpgradeSchedule'
+  properties: {
+    maintenanceWindow: {
+      schedule: {
+        weekly: {
+          intervalWeeks: 1
+          dayOfWeek: 'Sunday'
+        }
+      }
+      durationHours: 8
+      utcOffset: '+00:00'
+      startDate: '2025-05-27'
+      startTime: '00:00'
+    }
+  }
+}
