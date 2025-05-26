@@ -35,4 +35,4 @@ steps:
     connectionType: 'None'
     command: apply
     useConfigurationFile: true
-    configuration: 'CICD/deployment.yaml'
+    configuration: 'CICD/deployment.yml'
