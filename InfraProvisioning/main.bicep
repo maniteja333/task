@@ -6,6 +6,7 @@ param Plesubnetid string = '/subscriptions/58d256cb-83ad-4305-895e-3e58664a8daa/
 param managedClusters_aks_cluster_name string = 'aks-cluster'
 @secure()
 param windowsAdminPassword string
+param acrName string 
 
 module VirtualNetworkModule './NetworkProvisioning/VirtualNetwork.bicep' = {
   name: 'NetworkDeployment'
@@ -29,6 +30,13 @@ module AksModule './templates/aks.bicep' = {
   params: {
      managedClusters_aks_cluster_name : managedClusters_aks_cluster_name
      windowsAdminPassword : windowsAdminPassword
+  }
+}
+
+module AcrModule './templates/acr.bicep' = {
+  name: 'AcrDeployment'
+  params: {
+     acrName: acrName
   }
 }
 
