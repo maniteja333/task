@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: appcer.azurecr.io/myapp:latest
+        image: appcer.azurecr.io/myapp:latest2
         ports:
         - containerPort: 80
 ---
