@@ -3,7 +3,7 @@ param AkssubnetName  string
 param AppgwsubnetName string
 
 
-module VirtualNetworkModule './NetworkProvisioning/Virtualnetwork.bicep' = {
+module VirtualNetworkModule './NetworkProvisioning/VirtualNetwork.bicep' = {
   name: 'Networkdeployment'
   params: {
     virtualNetworkName: virtualNetworkName
