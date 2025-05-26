@@ -15,9 +15,9 @@ steps:
 - task: Docker@2
   inputs:
     command: buildAndPush
-    repository: appcer.azurecr.io/myapp   # This is the full ACR login server + repo name
-    containerRegistry: 'acr-sc'          # Your service connection name
-    dockerfile: '**/Dockerfile'
+    repository: appcer.azurecr.io/myapp   # ACR login server + repo name
+    containerRegistry: 'acr-sc'           # Your Azure DevOps ACR service connection
+    dockerfile: 'CICD/Dockerfile'         # ✅ Direct path to Dockerfile
     tags: latest2
 
 - task: AzureCLI@2
