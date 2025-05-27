@@ -27,12 +27,12 @@ module VirtualNetworkModule './NetworkProvisioning/VirtualNetwork.bicep' = {
   }
 }
 
-// module storageModule './templates/storageaccount.bicep' = {
-//   name: 'storageDeployment'
-//   params: {
-//    plesubnetid: Plesubnetid
-//   }
-// }
+module storageModule './templates/storageaccount.bicep' = {
+  name: 'storageDeployment'
+  params: {
+   plesubnetid: Plesubnetid
+  }
+}
 
 module AksModule './templates/aks.bicep' = {
   name: 'AksDeployment'
