@@ -51,7 +51,7 @@ stages:
         versionSpec: '3.x'
 
     - task: AzureCLI@2
-      displayName: 'Get AKS credentials'
+      displayName: 'Dockerize Build and Push to ACR'
       inputs:
         azureSubscription: 'aks-sc'
         scriptType: 'bash'
