@@ -7,7 +7,7 @@ param managedClusters_aks_cluster_name string = 'aks-cluster'
 
 param applicationGateways_appgw_name string = 'appgw'
 param appgwip string = 'appgwip'
-param appgwSubnetID string
+param appgwSubnetID string = '/subscriptions/58d256cb-83ad-4305-895e-3e58664a8daa/resourceGroups/randomapp-rg/providers/Microsoft.Network/virtualNetworks/aks-vnet/subnets/appgw-subnet'
 param appgwumi string = 'appgw-umi'
 param appgwkeyvault string ='keyvault-ra'
 param sslcertname string = 'appgw2'
