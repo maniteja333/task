@@ -13,6 +13,23 @@ stages:
   - job :
     displayName: "deploy infrastructure"
     steps:
+      - task: AzureCLI@2
+        displayName: "Run What-If Deployment"
+        inputs:
+          azureSubscription: 'aks-sc'
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            az deployment group what-if \
+              --resource-group "randomapp-rg" \
+              --template-file "$(System.DefaultWorkingDirectory)/InfraProvisioning/main.bicep" \
+              --parameters virtualNetworkName="$(virtualNetworkName)" \
+                          AkssubnetName="$(AkssubnetName)" \
+                          AppgwsubnetName="$(AppgwsubnetName)" \
+                          PlesubnetName="$(PlesubnetName)" \
+                          windowsAdminPassword="$(windowsAdminPassword)" \
+                          acrName="$(acrName)" \
+                          frontendfqdn="$(frontendfqdn)"
         - task: AzureCLI@2
           displayName: "deploy infrastructure"
           inputs:
