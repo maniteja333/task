@@ -30,5 +30,6 @@ stages:
                                       PlesubnetName="$(PlesubnetName)" \
                                       windowsAdminPassword="$(windowsAdminPassword)" \
                                       acrName=$(acrName) 
+                                      frontendfqdn=$(frontendfqdn)
                             
                           
