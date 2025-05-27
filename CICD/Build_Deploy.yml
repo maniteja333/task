@@ -6,50 +6,87 @@ pool:
 
 variables:
   imageName: 'python-api'
+stages:
+- stage: Build_Deploy_FrontEnd
+  displayName: "Build & Deploy to FE"
+  jobs:
+  - job:
+    displayName: "Build & Deploy to FE"
+    steps:
+      - task: AzureCLI@2
+        displayName: 'Upload index.html to $web container'
+        inputs:
+          azureSubscription: 'aks-sc'
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            # Variables
+            STORAGE_ACCOUNT_NAME='Frontendsa433'
+            CONTAINER_NAME='$web'
 
-steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '3.x'
+            # Get storage account key
+            ACCOUNT_KEY=$(az storage account keys list \
+              --account-name $STORAGE_ACCOUNT_NAME \
+              --query "[0].value" -o tsv)
 
-- task: AzureCLI@2
-  displayName: 'Get AKS credentials'
-  inputs:
-    azureSubscription: 'aks-sc'
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
-      az acr login --name appcer
-      cd $(Build.SourcesDirectory)/CICD
-      ls -l  # 👈 sanity check
-      docker build -t appcer.azurecr.io/myapp:latest2 .
-      docker push appcer.azurecr.io/myapp:latest2
+            # Upload the file, overwrite if exists
+            az storage blob upload \
+              --account-name $STORAGE_ACCOUNT_NAME \
+              --account-key $ACCOUNT_KEY \
+              --container-name $CONTAINER_NAME \
+              --file $FILE_PATH \
+              --name index.html \
+              --overwrite true
+          workingDirectory: $(System.DefaultWorkingDirectory)/CICD
 
- 
+- stage: Build_Deploy__API
+  displayName: "Deploy to API"
+  jobs:
+  - job:
+    displayName: "Build & Deploy to API"
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.x'
 
-- task: AzureCLI@2
-  displayName: 'Get AKS credentials'
-  inputs:
-    azureSubscription: 'aks-sc'
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
-      az aks get-credentials --resource-group randomapp-rg --name aks-cluster --overwrite-existing --file kubeconfig
+    - task: AzureCLI@2
+      displayName: 'Get AKS credentials'
+      inputs:
+        azureSubscription: 'aks-sc'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          az acr login --name appcer
+          cd $(Build.SourcesDirectory)/CICD
+          ls -l sanity check
+          docker build -t appcer.azurecr.io/myapp:latest2 .
+          docker push appcer.azurecr.io/myapp:latest2
 
-# - task: Kubernetes@1
-#   displayName: 'Deploy to AKS'
-#   inputs:
-#     connectionType: 'None'
-#     command: apply
-#     useConfigurationFile: true
-#     configuration: 'CICD/deployment.yml'
-- task: Kubernetes@1
-  displayName: 'Deploy to AKS'
-  inputs:
-    connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceEndpoint: 'kube-sc'
-    command: 'apply'
-    useConfigurationFile: true
-    configuration: 'CICD/deployment.yml'
+    
+
+    - task: AzureCLI@2
+      displayName: 'Get AKS credentials'
+      inputs:
+        azureSubscription: 'aks-sc'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          az aks get-credentials --resource-group randomapp-rg --name aks-cluster --overwrite-existing --file kubeconfig
+
+    # - task: Kubernetes@1
+    #   displayName: 'Deploy to AKS'
+    #   inputs:
+    #     connectionType: 'None'
+    #     command: apply
+    #     useConfigurationFile: true
+    #     configuration: 'CICD/deployment.yml'
+    - task: Kubernetes@1
+      displayName: 'Deploy to AKS'
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceEndpoint: 'kube-sc'
+        command: 'apply'
+        useConfigurationFile: true
+        configuration: 'CICD/deployment.yml'
 
 
