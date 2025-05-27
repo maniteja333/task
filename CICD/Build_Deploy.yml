@@ -23,6 +23,7 @@ stages:
             # Variables
             STORAGE_ACCOUNT_NAME='frontendsa433'
             CONTAINER_NAME='$web'
+            FILE_NAME='index.html'
 
             # Get storage account key
             ACCOUNT_KEY=$(az storage account keys list \
@@ -34,7 +35,7 @@ stages:
               --account-name $STORAGE_ACCOUNT_NAME \
               --account-key $ACCOUNT_KEY \
               --container-name $CONTAINER_NAME \
-              --file $FILE_PATH \
+              --file $FILE_NAME \
               --name index.html \
               --overwrite true
           workingDirectory: $(System.DefaultWorkingDirectory)/CICD
