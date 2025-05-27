@@ -48,11 +48,7 @@ resource applicationGateways_appgw_name_resource 'Microsoft.Network/applicationG
         }
       }
     ]
-    sslCertificates: [
-      {
-        name: applicationGateways_appgw_name
-        properties: {}
-      }
+
       {
         name: sslcertname
         properties: {
