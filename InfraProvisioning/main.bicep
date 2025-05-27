@@ -4,6 +4,15 @@ param AppgwsubnetName string
 param PlesubnetName string
 param Plesubnetid string = '/subscriptions/58d256cb-83ad-4305-895e-3e58664a8daa/resourceGroups/randomapp-rg/providers/Microsoft.Network/virtualNetworks/aks-vnet/subnets/ple-subnet'
 param managedClusters_aks_cluster_name string = 'aks-cluster'
+
+param applicationGateways_appgw_name string = 'appgw'
+param appgwip string = 'appgwip'
+param appgwSubnetID string
+param appgwumi string = 'appgw-umi'
+param appgwkeyvault string ='keyvault-ra'
+param sslcertname string = 'appgw2'
+param frontendfqdn string 
+
 @secure()
 param windowsAdminPassword string
 param acrName string 
@@ -18,12 +27,12 @@ module VirtualNetworkModule './NetworkProvisioning/VirtualNetwork.bicep' = {
   }
 }
 
-module storageModule './templates/storageaccount.bicep' = {
-  name: 'storageDeployment'
-  params: {
-   plesubnetid: Plesubnetid
-  }
-}
+// module storageModule './templates/storageaccount.bicep' = {
+//   name: 'storageDeployment'
+//   params: {
+//    plesubnetid: Plesubnetid
+//   }
+// }
 
 module AksModule './templates/aks.bicep' = {
   name: 'AksDeployment'
@@ -39,5 +48,18 @@ module AcrModule './templates/acr.bicep' = {
   params: {
      acrName: acrName
   }
+}
+
+module AppGEModule './templates/appgateway.bicep' = {
+  name: 'AppgatewayDeployment'
+  params: {
+     applicationGateways_appgw_name : applicationGateways_appgw_name
+      appgwip :appgwip
+      appgwSubnetID :appgwSubnetID 
+      appgwumi :appgwumi
+      appgwkeyvault :appgwkeyvault 
+      sslcertname : sslcertname 
+      frontendfqdn :frontendfqdn
+        }
 }
 
