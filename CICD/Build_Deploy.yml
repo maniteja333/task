@@ -21,7 +21,7 @@ stages:
           scriptLocation: inlineScript
           inlineScript: |
             # Variables
-            STORAGE_ACCOUNT_NAME='Frontendsa433'
+            STORAGE_ACCOUNT_NAME='frontendsa433'
             CONTAINER_NAME='$web'
 
             # Get storage account key
