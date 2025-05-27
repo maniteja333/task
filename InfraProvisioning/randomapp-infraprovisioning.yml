@@ -29,7 +29,7 @@ stages:
                                       AppgwsubnetName="$(AppgwsubnetName)" \
                                       PlesubnetName="$(PlesubnetName)" \
                                       windowsAdminPassword="$(windowsAdminPassword)" \
-                                      acrName=$(acrName) 
+                                      acrName=$(acrName) \
                                       frontendfqdn=$(frontendfqdn)
                             
                           
