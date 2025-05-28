@@ -1,10 +1,19 @@
 trigger:
    - none
- 
+parameters:
+  - name: env
+    displayName: enter the environment to deploy
+    default: d
+    values:
+      - d
+      - t
+      - a
+      - p
+
 pool:
   vmImage: ubuntu-latest
 variables:
-  - group: random-vars
+  - group: random-${{parameters.env}}-vars
 
 stages:
 - stage: deploy_infrastructure
