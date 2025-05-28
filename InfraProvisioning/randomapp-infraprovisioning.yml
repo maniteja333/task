@@ -39,6 +39,8 @@ stages:
                             windowsAdminPassword="$(windowsAdminPassword)" \
                             acrName="$(acrName)" \
                             frontendfqdn="$(frontendfqdn)" \
+                            applicationGateways_appgw_name="$(appGatewayName)" \
+                            appgwkeyvault="$(appgwkeyvault)" \
                             storageAccountName="$(storageAccountName)" \
                             umiName="$(umiName)" \
                             Plesubnetid="$(plesubnetid)" \
@@ -65,6 +67,8 @@ stages:
                                       windowsAdminPassword="$(windowsAdminPassword)" \
                                       acrName="$(acrName)" \
                                       frontendfqdn="$(frontendfqdn)" \
+                                      applicationGateways_appgw_name="$(appGatewayName)" \
+                                      appgwkeyvault="$(appgwkeyvault)" \
                                       storageAccountName="$(storageAccountName)" \
                                       umiName="$(umiName)" \
                                       Plesubnetid="$(plesubnetid)" \
