@@ -41,7 +41,7 @@ stages:
                             frontendfqdn="$(frontendfqdn)" \
                             storageAccountName=$(storageAccountName) \
                             umiName=$(umiName) \
-                            plesubnetid=$(plesubnetid) \
+                            Plesubnetidsubnetid=$(plesubnetid) \
                             appgwsubnetid$(appgwsubnetid) \
                             appgwip$(appgwip) \
                             managedClusters_aks_cluster_name=$(managedClusters_aks_cluster_name) \
