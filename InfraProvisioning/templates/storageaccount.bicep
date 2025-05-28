@@ -13,7 +13,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   properties: {
     dnsEndpointType: 'Standard'
     defaultToOAuthAuthentication: false
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: 'Disabled'
     allowCrossTenantReplication: false
     minimumTlsVersion: 'TLS1_2'
     allowBlobPublicAccess: false
