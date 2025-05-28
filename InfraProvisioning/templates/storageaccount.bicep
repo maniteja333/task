@@ -1,4 +1,4 @@
-param storageAccountName string = 'frontendsa433'
+param storageAccountName string 
 param location string = resourceGroup().location
 param plesubnetid string
 
@@ -61,47 +61,6 @@ resource storageAccounts_blob 'Microsoft.Storage/storageAccounts/blobServices@20
   }
 }
 
-// resource Microsoft_Storage_storageAccounts_fileServices_storageAccounts_frontend433_name_default 'Microsoft.Storage/storageAccounts/fileServices@2024-01-01' = {
-//   parent: storageAccounts_frontend433_name_resource
-//   name: 'default'
-//   sku: {
-//     name: 'Standard_LRS'
-//     tier: 'Standard'
-//   }
-//   properties: {
-//     protocolSettings: {
-//       smb: {}
-//     }
-//     cors: {
-//       corsRules: []
-//     }
-//     shareDeleteRetentionPolicy: {
-//       enabled: false
-//       days: 0
-//     }
-//   }
-// }
-
-// resource Microsoft_Storage_storageAccounts_queueServices_storageAccounts_frontend433_name_default 'Microsoft.Storage/storageAccounts/queueServices@2024-01-01' = {
-//   parent: storageAccounts_frontend433_name_resource
-//   name: 'default'
-//   properties: {
-//     cors: {
-//       corsRules: []
-//     }
-//   }
-// }
-
-// resource Microsoft_Storage_storageAccounts_tableServices_storageAccounts_frontend433_name_default 'Microsoft.Storage/storageAccounts/tableServices@2024-01-01' = {
-//   parent: storageAccounts_frontend433_name_resource
-//   name: 'default'
-//   properties: {
-//     cors: {
-//       corsRules: []
-//     }
-//   }
-// }
-
 resource storageAccounts_web 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
   parent: storageAccounts_blob
   name: '$web'
@@ -113,9 +72,6 @@ resource storageAccounts_web 'Microsoft.Storage/storageAccounts/blobServices/con
     denyEncryptionScopeOverride: false
     publicAccess: 'None'
   }
-  dependsOn: [
-    storageAccount
-  ]
 }
 
 // Private Endpoint for `web` (static website)
@@ -139,7 +95,25 @@ resource webPrivateEndpoint 'Microsoft.Network/privateEndpoints@2023-05-01' = {
     ]
   }
   dependsOn: [
-    storageAccount
     storageAccounts_web
+  ]
+}
+
+resource ple_dns_zone 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2024-05-01' = {
+  parent: webPrivateEndpoint
+  name: 'default'
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: 'privatelink_web_core_windows_net'
+        properties: {
+          privateDnsZoneId: resourceId('Microsoft.Network/privateDnsZones', 'privatelink.web.core.windows.net')
+
+        }
+      }
+    ]
+  }
+  dependsOn: [
+         webPrivateEndpoint
   ]
 }

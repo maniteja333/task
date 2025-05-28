@@ -2,17 +2,17 @@ param virtualNetworkName string
 param AkssubnetName string
 param AppgwsubnetName string
 param PlesubnetName string
-param Plesubnetid string = '/subscriptions/58d256cb-83ad-4305-895e-3e58664a8daa/resourceGroups/randomapp-rg/providers/Microsoft.Network/virtualNetworks/aks-vnet/subnets/ple-subnet'
-param managedClusters_aks_cluster_name string = 'aks-cluster'
-
-param applicationGateways_appgw_name string = 'appgw'
-param appgwip string = 'appgwip'
-param appgwSubnetID string = '/subscriptions/58d256cb-83ad-4305-895e-3e58664a8daa/resourceGroups/randomapp-rg/providers/Microsoft.Network/virtualNetworks/aks-vnet/subnets/appgw-subnet'
-param appgwumi string = 'appgw-umi'
-param appgwkeyvault string ='keyvault-ra'
-param sslcertname string = 'appgw2'
+param Plesubnetid string 
+param managedClusters_aks_cluster_name string
+param storageAccountName string 
+param applicationGateways_appgw_name string
+param appgwip string
+param appgwSubnetID string 
+param appgwumi string 
+param appgwkeyvault string 
+param sslcertname string 
 param frontendfqdn string 
-
+param umiName string 
 @secure()
 param windowsAdminPassword string
 param acrName string 
@@ -31,6 +31,7 @@ module storageModule './templates/storageaccount.bicep' = {
   name: 'storageDeployment'
   params: {
    plesubnetid: Plesubnetid
+   storageAccountName:  storageAccountName
   }
 }
 
@@ -63,3 +64,9 @@ module AppGEModule './templates/appgateway.bicep' = {
         }
 }
 
+module Umi './templates/umi.bicep' = {
+  name: 'UmiDeployment'
+  params: {
+      umiName : umiName
+  }
+}
