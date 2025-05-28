@@ -63,16 +63,16 @@ stages:
                                       AppgwsubnetName="$(AppgwsubnetName)" \
                                       PlesubnetName="$(PlesubnetName)" \
                                       windowsAdminPassword="$(windowsAdminPassword)" \
-                                      acrName=$(acrName) \
-                                      frontendfqdn=$(frontendfqdn) \
-                                      storageAccountName=$(storageAccountName) \
-                                      umiName=$(umiName) \
-                                      plesubnetid=$(plesubnetid) \
-                                      appgwsubnetid$(appgwsubnetid) \
-                                      appgwip$(appgwip) \
-                                      managedClusters_aks_cluster_name=$(managedClusters_aks_cluster_name) \
-                                      appgwumi=$(appgwumi) \
-                                      sslcertname=$(sslcertname)
+                                      acrName="$(acrName)" \
+                                      frontendfqdn="$(frontendfqdn)" \
+                                      storageAccountName="$(storageAccountName)" \
+                                      umiName="$(umiName)" \
+                                      plesubnetid="$(plesubnetid)" \
+                                      appgwsubnetid="$(appgwsubnetid)" \
+                                      appgwip="$(appgwip)" \
+                                      managedClusters_aks_cluster_name="$(managedClusters_aks_cluster_name)" \
+                                      appgwumi="$(appgwumi)" \
+                                      sslcertname="$(sslcertname)"
 
 
                                       
