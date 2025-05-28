@@ -68,7 +68,7 @@ stages:
                                       storageAccountName="$(storageAccountName)" \
                                       umiName="$(umiName)" \
                                       Plesubnetid="$(plesubnetid)" \
-                                      appgwsubnetid="$(appgwsubnetid)" \
+                                      appgwSubnetID="$(appgwsubnetid)" \
                                       appgwip="$(appgwip)" \
                                       managedClusters_aks_cluster_name="$(managedClusters_aks_cluster_name)" \
                                       appgwumi="$(appgwumi)" \
