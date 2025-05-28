@@ -138,4 +138,8 @@ resource webPrivateEndpoint 'Microsoft.Network/privateEndpoints@2023-05-01' = {
       }
     ]
   }
+  dependsOn: [
+    storageAccount
+    storageAccounts_web
+  ]
 }
