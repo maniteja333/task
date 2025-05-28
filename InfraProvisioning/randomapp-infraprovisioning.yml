@@ -39,14 +39,14 @@ stages:
                             windowsAdminPassword="$(windowsAdminPassword)" \
                             acrName="$(acrName)" \
                             frontendfqdn="$(frontendfqdn)" \
-                            storageAccountName=$(storageAccountName) \
-                            umiName=$(umiName) \
-                            Plesubnetid=$(plesubnetid) \
-                            appgwsubnetid$(appgwsubnetid) \
-                            appgwip$(appgwip) \
-                            managedClusters_aks_cluster_name=$(managedClusters_aks_cluster_name) \
-                            appgwumi=$(appgwumi) \
-                            sslcertname=$(sslcertname)
+                            storageAccountName="$(storageAccountName)" \
+                            umiName="$(umiName)" \
+                            Plesubnetid="$(plesubnetid)" \
+                            appgwsubnetid="$(appgwsubnetid)" \
+                            appgwip="$(appgwip)" \
+                            managedClusters_aks_cluster_name="$(managedClusters_aks_cluster_name)" \
+                            appgwumi="$(appgwumi)" \
+                            sslcertname="$(sslcertname)"
         - task: AzureCLI@2
           displayName: "deploy infrastructure"
           inputs:
@@ -67,7 +67,7 @@ stages:
                                       frontendfqdn="$(frontendfqdn)" \
                                       storageAccountName="$(storageAccountName)" \
                                       umiName="$(umiName)" \
-                                      plesubnetid="$(plesubnetid)" \
+                                      Plesubnetid="$(plesubnetid)" \
                                       appgwsubnetid="$(appgwsubnetid)" \
                                       appgwip="$(appgwip)" \
                                       managedClusters_aks_cluster_name="$(managedClusters_aks_cluster_name)" \
