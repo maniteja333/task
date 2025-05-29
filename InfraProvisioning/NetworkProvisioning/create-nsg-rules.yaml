@@ -1,0 +1,68 @@
+trigger: none
+
+parameters:
+  - name: nsgName
+    type: string
+    default: 'my-nsg'
+  - name: resourceGroup
+    type: string
+    default: 'my-rg'
+  - name: location
+    type: string
+    default: 'northeurope'
+  - name: inboundRuleName
+    type: string
+    default: 'Allow-HTTP-Inbound'
+  - name: outboundRuleName
+    type: string
+    default: 'Allow-DNS-Outbound'
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: AddNSGRules
+  jobs:
+  - job: DeployRules
+    steps:
+    - task: AzureCLI@2
+      displayName: 'Add Inbound Rule'
+      inputs:
+        azureSubscription: 'your-service-connection-name'
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          az network nsg rule create \
+            --resource-group ${{ parameters.resourceGroup }} \
+            --nsg-name ${{ parameters.nsgName }} \
+            --name ${{ parameters.inboundRuleName }} \
+            --priority 200 \
+            --direction Inbound \
+            --access Allow \
+            --protocol Tcp \
+            --source-address-prefixes '*' \
+            --source-port-ranges '*' \
+            --destination-address-prefixes '*' \
+            --destination-port-ranges 80 \
+            --description "Allow HTTP inbound"
+
+    - task: AzureCLI@2
+      displayName: 'Add Outbound Rule'
+      inputs:
+        azureSubscription: 'your-service-connection-name'
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          az network nsg rule create \
+            --resource-group ${{ parameters.resourceGroup }} \
+            --nsg-name ${{ parameters.nsgName }} \
+            --name ${{ parameters.outboundRuleName }} \
+            --priority 201 \
+            --direction Outbound \
+            --access Allow \
+            --protocol Udp \
+            --source-address-prefixes '*' \
+            --source-port-ranges '*' \
+            --destination-address-prefixes '*' \
+            --destination-port-ranges 53 \
+            --description "Allow DNS outbound"
