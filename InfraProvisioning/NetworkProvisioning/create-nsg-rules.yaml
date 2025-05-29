@@ -7,15 +7,70 @@ parameters:
   - name: resourceGroup
     type: string
     default: 'my-rg'
-  - name: location
-    type: string
-    default: 'northeurope'
+
+  # Inbound rule parameters
   - name: inboundRuleName
     type: string
-    default: 'Allow-HTTP-Inbound'
+    default: 'Allow-Inbound'
+  - name: inboundPriority
+    type: number
+    default: 200
+  - name: inboundDirection
+    type: string
+    default: 'Inbound'
+  - name: inboundAccess
+    type: string
+    default: 'Allow'
+  - name: inboundProtocol
+    type: string
+    default: 'Tcp'
+  - name: inboundSource
+    type: string
+    default: '*'
+  - name: inboundSourcePort
+    type: string
+    default: '*'
+  - name: inboundDestination
+    type: string
+    default: '*'
+  - name: inboundDestinationPort
+    type: string
+    default: '80'
+  - name: inboundDescription
+    type: string
+    default: 'Allow HTTP inbound'
+
+  # Outbound rule parameters
   - name: outboundRuleName
     type: string
-    default: 'Allow-DNS-Outbound'
+    default: 'Allow-Outbound'
+  - name: outboundPriority
+    type: number
+    default: 201
+  - name: outboundDirection
+    type: string
+    default: 'Outbound'
+  - name: outboundAccess
+    type: string
+    default: 'Allow'
+  - name: outboundProtocol
+    type: string
+    default: 'Udp'
+  - name: outboundSource
+    type: string
+    default: '*'
+  - name: outboundSourcePort
+    type: string
+    default: '*'
+  - name: outboundDestination
+    type: string
+    default: '*'
+  - name: outboundDestinationPort
+    type: string
+    default: '53'
+  - name: outboundDescription
+    type: string
+    default: 'Allow DNS outbound'
 
 pool:
   vmImage: ubuntu-latest
@@ -33,18 +88,18 @@ stages:
         scriptLocation: inlineScript
         inlineScript: |
           az network nsg rule create \
-            --resource-group ${{ parameters.resourceGroup }} \
-            --nsg-name ${{ parameters.nsgName }} \
-            --name ${{ parameters.inboundRuleName }} \
-            --priority 200 \
-            --direction Inbound \
-            --access Allow \
-            --protocol Tcp \
-            --source-address-prefixes '*' \
-            --source-port-ranges '*' \
-            --destination-address-prefixes '*' \
-            --destination-port-ranges 80 \
-            --description "Allow HTTP inbound"
+            --resource-group '${{ parameters.resourceGroup }}' \
+            --nsg-name '${{ parameters.nsgName }}' \
+            --name '${{ parameters.inboundRuleName }}' \
+            --priority ${{ parameters.inboundPriority }} \
+            --direction '${{ parameters.inboundDirection }}' \
+            --access '${{ parameters.inboundAccess }}' \
+            --protocol '${{ parameters.inboundProtocol }}' \
+            --source-address-prefixes '${{ parameters.inboundSource }}' \
+            --source-port-ranges '${{ parameters.inboundSourcePort }}' \
+            --destination-address-prefixes '${{ parameters.inboundDestination }}' \
+            --destination-port-ranges '${{ parameters.inboundDestinationPort }}' \
+            --description "${{ parameters.inboundDescription }}"
 
     - task: AzureCLI@2
       displayName: 'Add Outbound Rule'
@@ -54,15 +109,15 @@ stages:
         scriptLocation: inlineScript
         inlineScript: |
           az network nsg rule create \
-            --resource-group ${{ parameters.resourceGroup }} \
-            --nsg-name ${{ parameters.nsgName }} \
-            --name ${{ parameters.outboundRuleName }} \
-            --priority 201 \
-            --direction Outbound \
-            --access Allow \
-            --protocol Udp \
-            --source-address-prefixes '*' \
-            --source-port-ranges '*' \
-            --destination-address-prefixes '*' \
-            --destination-port-ranges 53 \
-            --description "Allow DNS outbound"
+            --resource-group '${{ parameters.resourceGroup }}' \
+            --nsg-name '${{ parameters.nsgName }}' \
+            --name '${{ parameters.outboundRuleName }}' \
+            --priority ${{ parameters.outboundPriority }} \
+            --direction '${{ parameters.outboundDirection }}' \
+            --access '${{ parameters.outboundAccess }}' \
+            --protocol '${{ parameters.outboundProtocol }}' \
+            --source-address-prefixes '${{ parameters.outboundSource }}' \
+            --source-port-ranges '${{ parameters.outboundSourcePort }}' \
+            --destination-address-prefixes '${{ parameters.outboundDestination }}' \
+            --destination-port-ranges '${{ parameters.outboundDestinationPort }}' \
+            --description "${{ parameters.outboundDescription }}"
