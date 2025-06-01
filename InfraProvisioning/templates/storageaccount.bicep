@@ -143,3 +143,21 @@ resource webPrivateEndpoint 'Microsoft.Network/privateEndpoints@2023-05-01' = {
     storageAccounts_web
   ]
 }
+
+resource ple_dns_zone 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2024-05-01' = {
+  parent: webPrivateEndpoint
+  name: 'default'
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: 'privatelink_web_core_windows_net'
+        properties: {
+          privateDnsZoneId: resourceId('Microsoft.Network/privateDnsZones', 'privatelink.web.core.windows.net')
+        }
+      }
+    ]
+  }
+  dependsOn: [
+    webPrivateEndpoint
+  ]
+}
