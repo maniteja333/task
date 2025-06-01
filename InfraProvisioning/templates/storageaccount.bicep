@@ -4,9 +4,10 @@ param plesubnetid string
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   name: storageAccountName
-  location: location
+  location: 'northeurope'
   sku: {
     name: 'Standard_LRS'
+    tier: 'Standard'
   }
   kind: 'StorageV2'
   properties: {
@@ -47,6 +48,7 @@ resource storageAccounts_blob 'Microsoft.Storage/storageAccounts/blobServices@20
   name: 'default'
   sku: {
     name: 'Standard_LRS'
+    tier: 'Standard'
   }
   properties: {
     cors: {
@@ -59,6 +61,47 @@ resource storageAccounts_blob 'Microsoft.Storage/storageAccounts/blobServices@20
   }
 }
 
+// resource Microsoft_Storage_storageAccounts_fileServices_storageAccounts_frontend433_name_default 'Microsoft.Storage/storageAccounts/fileServices@2024-01-01' = {
+//   parent: storageAccounts_frontend433_name_resource
+//   name: 'default'
+//   sku: {
+//     name: 'Standard_LRS'
+//     tier: 'Standard'
+//   }
+//   properties: {
+//     protocolSettings: {
+//       smb: {}
+//     }
+//     cors: {
+//       corsRules: []
+//     }
+//     shareDeleteRetentionPolicy: {
+//       enabled: false
+//       days: 0
+//     }
+//   }
+// }
+
+// resource Microsoft_Storage_storageAccounts_queueServices_storageAccounts_frontend433_name_default 'Microsoft.Storage/storageAccounts/queueServices@2024-01-01' = {
+//   parent: storageAccounts_frontend433_name_resource
+//   name: 'default'
+//   properties: {
+//     cors: {
+//       corsRules: []
+//     }
+//   }
+// }
+
+// resource Microsoft_Storage_storageAccounts_tableServices_storageAccounts_frontend433_name_default 'Microsoft.Storage/storageAccounts/tableServices@2024-01-01' = {
+//   parent: storageAccounts_frontend433_name_resource
+//   name: 'default'
+//   properties: {
+//     cors: {
+//       corsRules: []
+//     }
+//   }
+// }
+
 resource storageAccounts_web 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
   parent: storageAccounts_blob
   name: '$web'
@@ -70,18 +113,12 @@ resource storageAccounts_web 'Microsoft.Storage/storageAccounts/blobServices/con
     denyEncryptionScopeOverride: false
     publicAccess: 'None'
   }
+  dependsOn: [
+    storageAccount
+  ]
 }
 
-// Enable static website (required for 'web' group in private endpoint)
-resource staticWebsite 'Microsoft.Storage/storageAccounts/staticWebsite@2024-01-01' = {
-  parent: storageAccount
-  name: 'default'
-  properties: {
-    indexDocument: 'index.html'
-    error404Document: '404.html'
-  }
-}
-
+// Private Endpoint for `web` (static website)
 resource webPrivateEndpoint 'Microsoft.Network/privateEndpoints@2023-05-01' = {
   name: '${storageAccountName}-web-pe'
   location: location
@@ -102,24 +139,7 @@ resource webPrivateEndpoint 'Microsoft.Network/privateEndpoints@2023-05-01' = {
     ]
   }
   dependsOn: [
-    staticWebsite
-  ]
-}
-
-resource ple_dns_zone 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2024-05-01' = {
-  parent: webPrivateEndpoint
-  name: 'default'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'privatelink_web_core_windows_net'
-        properties: {
-          privateDnsZoneId: resourceId('Microsoft.Network/privateDnsZones', 'privatelink.web.core.windows.net')
-        }
-      }
-    ]
-  }
-  dependsOn: [
-    webPrivateEndpoint
+    storageAccount
+    storageAccounts_web
   ]
 }
