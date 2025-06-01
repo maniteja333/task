@@ -1,13 +1,12 @@
-param storageAccountName string 
+param storageAccountName string = 'frontendsa433'
 param location string = resourceGroup().location
 param plesubnetid string
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   name: storageAccountName
-  location: 'northeurope'
+  location: location
   sku: {
     name: 'Standard_LRS'
-    tier: 'Standard'
   }
   kind: 'StorageV2'
   properties: {
@@ -48,7 +47,6 @@ resource storageAccounts_blob 'Microsoft.Storage/storageAccounts/blobServices@20
   name: 'default'
   sku: {
     name: 'Standard_LRS'
-    tier: 'Standard'
   }
   properties: {
     cors: {
@@ -74,7 +72,16 @@ resource storageAccounts_web 'Microsoft.Storage/storageAccounts/blobServices/con
   }
 }
 
-// Private Endpoint for `web` (static website)
+// Enable static website (required for 'web' group in private endpoint)
+resource staticWebsite 'Microsoft.Storage/storageAccounts/staticWebsite@2024-01-01' = {
+  parent: storageAccount
+  name: 'default'
+  properties: {
+    indexDocument: 'index.html'
+    error404Document: '404.html'
+  }
+}
+
 resource webPrivateEndpoint 'Microsoft.Network/privateEndpoints@2023-05-01' = {
   name: '${storageAccountName}-web-pe'
   location: location
@@ -95,7 +102,7 @@ resource webPrivateEndpoint 'Microsoft.Network/privateEndpoints@2023-05-01' = {
     ]
   }
   dependsOn: [
-    storageAccounts_web
+    staticWebsite
   ]
 }
 
@@ -108,12 +115,11 @@ resource ple_dns_zone 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2
         name: 'privatelink_web_core_windows_net'
         properties: {
           privateDnsZoneId: resourceId('Microsoft.Network/privateDnsZones', 'privatelink.web.core.windows.net')
-
         }
       }
     ]
   }
   dependsOn: [
-         webPrivateEndpoint
+    webPrivateEndpoint
   ]
 }
