@@ -30,7 +30,7 @@ stages:
             scriptLocation: 'inlineScript'
             inlineScript: |
               az deployment group what-if \
-                --resource-group "randomapp-rg" \
+                --resource-group "mmt-aks" \
                 --template-file "$(System.DefaultWorkingDirectory)/InfraProvisioning/main.bicep" \
                 --parameters virtualNetworkName="$(virtualNetworkName)" \
                             AkssubnetName="$(AkssubnetName)" \
@@ -57,7 +57,7 @@ stages:
             scriptLocation: 'inlineScript'
             inlineScript: |
                           az deployment group create \
-                          --resource-group "randomapp-rg" \
+                          --resource-group "mmt-aks" \
                           --mode Incremental \
                           --template-file "$(System.DefaultWorkingDirectory)/InfraProvisioning/main.bicep" \
                           --parameters virtualNetworkName="$(virtualNetworkName)" \
