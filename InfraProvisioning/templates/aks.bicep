@@ -8,7 +8,7 @@ resource acr 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' existin
 
 }
 
-param virtualNetworks_aks_vnet_externalid string = '/subscriptions/58d256cb-83ad-4305-895e-3e58664a8daa/resourceGroups/mmt-aks/providers/Microsoft.Network/virtualNetworks/aks-vnet'
+param virtualNetworks_aks_vnet_externalid string = '/subscriptions/816733e9-6336-48bf-8c5f-d2c37a3bbdad/resourceGroups/mmt-aks/providers/Microsoft.Network/virtualNetworks/aks-vnet'
 param adminuser string  = 'adminuser'
 resource managedClusters_aks_cluster_name_resource 'Microsoft.ContainerService/managedClusters@2025-02-01' = {
   name: managedClusters_aks_cluster_name
@@ -237,14 +237,14 @@ resource managedClusters_aks_cluster_name_aksManagedNodeOSUpgradeSchedule 'Micro
   }
 }
 
-resource acrPullRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(managedClusters_aks_cluster_name_resource.id, acr.id, 'acrpull-role')
-  scope: acr
-  properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
-    principalId: managedClusters_aks_cluster_name_resource.identity.principalId
-  }
-  dependsOn: [
-    managedClusters_aks_cluster_name_resource
-  ]
-}
+// resource acrPullRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+//   name: guid(managedClusters_aks_cluster_name_resource.id, acr.id, 'acrpull-role')
+//   scope: acr
+//   properties: {
+//     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
+//     principalId: managedClusters_aks_cluster_name_resource.identity.principalId
+//   }
+//   dependsOn: [
+//     managedClusters_aks_cluster_name_resource
+//   ]
+// }
