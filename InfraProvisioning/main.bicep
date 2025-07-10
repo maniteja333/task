@@ -35,14 +35,14 @@ module storageModule './templates/storageaccount.bicep' = {
   }
 }
 
-// module AksModule './templates/aks.bicep' = {
-//   name: 'AksDeployment'
-//   params: {
-//      managedClusters_aks_cluster_name : managedClusters_aks_cluster_name
-//      windowsAdminPassword : windowsAdminPassword
-//      acrName:acrName
-//   }
-// }
+module AksModule './templates/aks.bicep' = {
+  name: 'AksDeployment'
+  params: {
+     managedClusters_aks_cluster_name : managedClusters_aks_cluster_name
+     windowsAdminPassword : windowsAdminPassword
+     acrName:acrName
+  }
+}
 
 module AcrModule './templates/acr.bicep' = {
   name: 'AcrDeployment'
