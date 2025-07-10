@@ -119,45 +119,45 @@ resource storageAccounts_web 'Microsoft.Storage/storageAccounts/blobServices/con
 }
 
 // Private Endpoint for `web` (static website)
-resource webPrivateEndpoint 'Microsoft.Network/privateEndpoints@2023-05-01' = {
-  name: '${storageAccountName}-web-pe'
-  location: location
-  properties: {
-    subnet: {
-      id: plesubnetid
-    }
-    privateLinkServiceConnections: [
-      {
-        name: 'webConnection'
-        properties: {
-          privateLinkServiceId: storageAccount.id
-          groupIds: [
-            'web'
-          ]
-        }
-      }
-    ]
-  }
-  dependsOn: [
-    storageAccount
-    storageAccounts_web
-  ]
-}
+// resource webPrivateEndpoint 'Microsoft.Network/privateEndpoints@2023-05-01' = {
+//   name: '${storageAccountName}-web-pe'
+//   location: location
+//   properties: {
+//     subnet: {
+//       id: plesubnetid
+//     }
+//     privateLinkServiceConnections: [
+//       {
+//         name: 'webConnection'
+//         properties: {
+//           privateLinkServiceId: storageAccount.id
+//           groupIds: [
+//             'web'
+//           ]
+//         }
+//       }
+//     ]
+//   }
+//   dependsOn: [
+//     storageAccount
+//     storageAccounts_web
+//   ]
+// }
 
-resource ple_dns_zone 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2024-05-01' = {
-  parent: webPrivateEndpoint
-  name: 'default'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'privatelink_web_core_windows_net'
-        properties: {
-          privateDnsZoneId: resourceId('Microsoft.Network/privateDnsZones', 'privatelink.web.core.windows.net')
-        }
-      }
-    ]
-  }
-  dependsOn: [
-    webPrivateEndpoint
-  ]
-}
+// resource ple_dns_zone 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2024-05-01' = {
+//   parent: webPrivateEndpoint
+//   name: 'default'
+//   properties: {
+//     privateDnsZoneConfigs: [
+//       {
+//         name: 'privatelink_web_core_windows_net'
+//         properties: {
+//           privateDnsZoneId: resourceId('Microsoft.Network/privateDnsZones', 'privatelink.web.core.windows.net')
+//         }
+//       }
+//     ]
+//   }
+//   dependsOn: [
+//     webPrivateEndpoint
+//   ]
+// }
