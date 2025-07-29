@@ -65,4 +65,4 @@ jobs:
             --resource-group "$RESOURCE_GROUP" \
             --mode Incremental \
             --template-file InfraProvisioning/templates/storageaccount.bicep \
-            --parameters  storageAccountName="Akssa12365" 
+            --parameters  storageAccountName="mmtaks433" 
