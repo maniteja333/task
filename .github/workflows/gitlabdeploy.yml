@@ -51,7 +51,7 @@ jobs:
           az deployment group create \
             --resource-group "$RESOURCE_GROUP" \
             --mode Incremental \
-            --template-file task/InfraProvisioning/NetworkProvisioning/VirtualNetwork.bicep \
+            --template-file InfraProvisioning/NetworkProvisioning/VirtualNetwork.bicep \
             --parameters virtualNetworkName="$VNET_NAME" \
                          AkssubnetName="$AKS_SUBNET_NAME" \
                          PlesubnetName="$PLE_SUBNET_NAME"
