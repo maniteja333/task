@@ -29,13 +29,13 @@ jobs:
     runs-on: ubuntu-latest
 
     environment: vpps-${{ github.event.inputs.environment }}  # This links to the environment in GitHub Settings
-
-    env:  # These will pick up values from the environment config automatically
-      ENV: ${{ github.event.inputs.environment }}
-      RESOURCE_GROUP: mmt-${{ github.event.inputs.environment }}
-      VNET_NAME: ${{ env.VNET_NAME }}
-      AKS_SUBNET_NAME: ${{ env.AKS_SUBNET_NAME }}
-      PLE_SUBNET_NAME: ${{ env.PLE_SUBNET_NAME }}
+  
+  env:
+    ENV: ${{ github.event.inputs.environment }}
+    RESOURCE_GROUP: mmt-${{ github.event.inputs.environment }}
+    VNET_NAME: ${{ vars.VNET_NAME }}
+    AKS_SUBNET_NAME: ${{ vars.AKS_SUBNET_NAME }}
+    PLE_SUBNET_NAME: ${{ vars.PLE_SUBNET_NAME }}
 
     steps:
       - name: Checkout repo
