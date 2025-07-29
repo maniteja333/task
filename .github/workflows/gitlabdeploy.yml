@@ -19,7 +19,7 @@ on:
         options:
           - Network
           - Storage
-          - Appgateway
+          - acr
         default: Network
 
 jobs:
@@ -66,3 +66,13 @@ jobs:
             --mode Incremental \
             --template-file InfraProvisioning/templates/storageaccount.bicep \
             --parameters  storageAccountName="mmtaks433" 
+
+      - name: Deploy Storage
+        if: ${{ github.event.inputs.stage == 'acr' }}
+        run: |
+          echo "Deploying acr..."
+          az deployment group create \
+            --resource-group "$RESOURCE_GROUP" \
+            --mode Incremental \
+            --template-file InfraProvisioning/templates/acr.bicep \
+            --parameters  storageAccountName="mmtacr" 

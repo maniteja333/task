@@ -44,12 +44,12 @@ module VirtualNetworkModule './NetworkProvisioning/VirtualNetwork.bicep' = {
 //   }
 // }
 
-// module AcrModule './templates/acr.bicep' = {
-//   name: 'AcrDeployment'
-//   params: {
-//      acrName: acrName
-//   }
-// }
+module AcrModule './templates/acr.bicep' = {
+  name: 'AcrDeployment'
+  params: {
+     acrName: acrName
+  }
+}
 
 // module AppGEModule './templates/appgateway.bicep' = {
 //   name: 'AppgatewayDeployment'
