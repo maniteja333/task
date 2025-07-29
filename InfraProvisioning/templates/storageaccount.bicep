@@ -1,4 +1,4 @@
-param storageAccountName string = 'frontendsa433'
+param storageAccountName string 
 param location string = resourceGroup().location
 //param plesubnetid string
 
