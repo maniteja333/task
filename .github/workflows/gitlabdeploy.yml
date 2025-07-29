@@ -18,7 +18,7 @@ on:
         type: choice
         options:
           - Network
-          - keyvault
+          - Storage
           - Appgateway
         default: Network
 
@@ -56,3 +56,13 @@ jobs:
                          AkssubnetName="$AKS_SUBNET_NAME" \
                          PlesubnetName="$PLE_SUBNET_NAME" \
                          AppgwsubnetName="appgw-subnet"
+
+      - name: Deploy Storage
+        if: ${{ github.event.inputs.stage == 'Storage' }}
+        run: |
+          echo "Deploying Storage..."
+          az deployment group create \
+            --resource-group "$RESOURCE_GROUP" \
+            --mode Incremental \
+            --template-file InfraProvisioning/NetworkProvisioning/VirtualNetwork.bicep \
+            --parameters  storageAccountName="Aks-sa" 
