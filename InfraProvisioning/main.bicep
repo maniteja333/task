@@ -27,13 +27,13 @@ module VirtualNetworkModule './NetworkProvisioning/VirtualNetwork.bicep' = {
   }
 }
 
-// module storageModule './templates/storageaccount.bicep' = {
-//   name: 'storageDeployment'
-//   params: {
-//    plesubnetid: Plesubnetid
-//    storageAccountName:  storageAccountName
-//   }
-// }
+ module storageModule './templates/storageaccount.bicep' = {
+   name: 'storageDeployment'
+   params: {
+    plesubnetid: Plesubnetid
+    storageAccountName:  storageAccountName
+   }
+ }
 
 // module AksModule './templates/aks.bicep' = {
 //   name: 'AksDeployment'
