@@ -27,46 +27,46 @@ module VirtualNetworkModule './NetworkProvisioning/VirtualNetwork.bicep' = {
   }
 }
 
-module storageModule './templates/storageaccount.bicep' = {
-  name: 'storageDeployment'
-  params: {
-   plesubnetid: Plesubnetid
-   storageAccountName:  storageAccountName
-  }
-}
+// module storageModule './templates/storageaccount.bicep' = {
+//   name: 'storageDeployment'
+//   params: {
+//    plesubnetid: Plesubnetid
+//    storageAccountName:  storageAccountName
+//   }
+// }
 
-module AksModule './templates/aks.bicep' = {
-  name: 'AksDeployment'
-  params: {
-     managedClusters_aks_cluster_name : managedClusters_aks_cluster_name
-     windowsAdminPassword : windowsAdminPassword
-     acrName:acrName
-  }
-}
+// module AksModule './templates/aks.bicep' = {
+//   name: 'AksDeployment'
+//   params: {
+//      managedClusters_aks_cluster_name : managedClusters_aks_cluster_name
+//      windowsAdminPassword : windowsAdminPassword
+//      acrName:acrName
+//   }
+// }
 
-module AcrModule './templates/acr.bicep' = {
-  name: 'AcrDeployment'
-  params: {
-     acrName: acrName
-  }
-}
+// module AcrModule './templates/acr.bicep' = {
+//   name: 'AcrDeployment'
+//   params: {
+//      acrName: acrName
+//   }
+// }
 
-module AppGEModule './templates/appgateway.bicep' = {
-  name: 'AppgatewayDeployment'
-  params: {
-     applicationGateways_appgw_name : applicationGateways_appgw_name
-      appgwip :appgwip
-      appgwSubnetID :appgwSubnetID 
-      appgwumi :appgwumi
-      appgwkeyvault :appgwkeyvault 
-      sslcertname : sslcertname 
-      frontendfqdn :frontendfqdn
-        }
-}
+// module AppGEModule './templates/appgateway.bicep' = {
+//   name: 'AppgatewayDeployment'
+//   params: {
+//      applicationGateways_appgw_name : applicationGateways_appgw_name
+//       appgwip :appgwip
+//       appgwSubnetID :appgwSubnetID 
+//       appgwumi :appgwumi
+//       appgwkeyvault :appgwkeyvault 
+//       sslcertname : sslcertname 
+//       frontendfqdn :frontendfqdn
+//         }
+// }
 
-module Umi './templates/umi.bicep' = {
-  name: 'UmiDeployment'
-  params: {
-      umiName : umiName
-  }
-}
+// module Umi './templates/umi.bicep' = {
+//   name: 'UmiDeployment'
+//   params: {
+//       umiName : umiName
+//   }
+// }
