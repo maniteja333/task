@@ -47,7 +47,7 @@ jobs:
       - name: Deploy Infra&Network
         if: ${{ github.event.inputs.stage == 'Infra&Network' }}
         run: |
-          echo "Deploying Network..."
+          echo "Deploying Infra&Network..."
           az deployment group create \
             --resource-group "$RESOURCE_GROUP" \
             --mode Incremental \
@@ -55,7 +55,8 @@ jobs:
             --parameters virtualNetworkName="$VNET_NAME" \
                          AkssubnetName="$AKS_SUBNET_NAME" \
                          PlesubnetName="$PLE_SUBNET_NAME" \
-                         AppgwsubnetName="appgw-subnet"
+                         AppgwsubnetName="appgw-subnet" \
+                         acrName="mmtacr"
       - name: Deploy Network
         if: ${{ github.event.inputs.stage == 'Network' }}
         run: |
