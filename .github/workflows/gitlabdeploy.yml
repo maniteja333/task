@@ -27,6 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: vpps-${{ github.event.inputs.environment }}
 
+    # ✅ Define job-level environment variables here
     env:
       ENV: ${{ github.event.inputs.environment }}
       RESOURCE_GROUP: mmt-${{ github.event.inputs.environment }}
@@ -44,4 +45,13 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy Network
-        if: ${{ githu
+        if: ${{ github.event.inputs.stage == 'Network' }}
+        run: |
+          echo "Deploying Network..."
+          az deployment group create \
+            --resource-group "$RESOURCE_GROUP" \
+            --mode Incremental \
+            --template-file InfraProvisioning/network.bicep \
+            --parameters virtualNetworkName="$VNET_NAME" \
+                         AkssubnetName="$AKS_SUBNET_NAME" \
+                         PlesubnetName="$PLE_SUBNET_NAME"
