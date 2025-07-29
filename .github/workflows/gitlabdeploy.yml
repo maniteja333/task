@@ -20,22 +20,19 @@ on:
           - Network
           - keyvault
           - Appgateway
-        default: whatif
-
-
+        default: Network
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: vpps-${{ github.event.inputs.environment }}
 
-    environment: vpps-${{ github.event.inputs.environment }}  # This links to the environment in GitHub Settings
-  
-  env:
-    ENV: ${{ github.event.inputs.environment }}
-    RESOURCE_GROUP: mmt-${{ github.event.inputs.environment }}
-    VNET_NAME: ${{ vars.VNET_NAME }}
-    AKS_SUBNET_NAME: ${{ vars.AKS_SUBNET_NAME }}
-    PLE_SUBNET_NAME: ${{ vars.PLE_SUBNET_NAME }}
+    env:
+      ENV: ${{ github.event.inputs.environment }}
+      RESOURCE_GROUP: mmt-${{ github.event.inputs.environment }}
+      VNET_NAME: ${{ vars.VNET_NAME }}
+      AKS_SUBNET_NAME: ${{ vars.AKS_SUBNET_NAME }}
+      PLE_SUBNET_NAME: ${{ vars.PLE_SUBNET_NAME }}
 
     steps:
       - name: Checkout repo
@@ -46,61 +43,5 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # - name: Run What-If Deployment
-      #   if: ${{ github.event.inputs.environment != 'p' }}
-      #   run: |
-      #     az deployment group what-if \
-      #       --resource-group "$RESOURCE_GROUP" \
-      #       --template-file InfraProvisioning/main.bicep \
-      #       --parameters virtualNetworkName="${{ secrets.VNET_NAME }}" \
-      #                   AkssubnetName="${{ secrets.AKS_SUBNET_NAME }}" \
-      #                   AppgwsubnetName="${{ secrets.APPGW_SUBNET_NAME }}" \
-      #                   PlesubnetName="${{ secrets.PLE_SUBNET_NAME }}" \
-      #                   windowsAdminPassword="${{ secrets.WINDOWS_ADMIN_PASSWORD }}" \
-      #                   acrName="${{ secrets.ACR_NAME }}" \
-      #                   frontendfqdn="${{ secrets.FRONTEND_FQDN }}" \
-      #                   applicationGateways_appgw_name="${{ secrets.APPGW_NAME }}" \
-      #                   appgwkeyvault="${{ secrets.APPGW_KEYVAULT }}" \
-      #                   storageAccountName="${{ secrets.STORAGE_ACCOUNT_NAME }}" \
-      #                   umiName="${{ secrets.UMI_NAME }}" \
-      #                   Plesubnetid="${{ secrets.PLE_SUBNET_ID }}" \
-      #                   appgwSubnetID="${{ secrets.APPGW_SUBNET_ID }}" \
-      #                   appgwip="${{ secrets.APPGW_IP }}" \
-      #                   managedClusters_aks_cluster_name="${{ secrets.AKS_CLUSTER_NAME }}" \
-      #                   appgwumi="${{ secrets.APPGW_UMI }}" \
-      #                   sslcertname="${{ secrets.SSLCERT_NAME }}"
-
-      # - name: Deploy Bicep Template
-      #   run: |
-      #     az deployment group create \
-      #       --resource-group "$RESOURCE_GROUP" \
-      #       --mode Incremental \
-      #       --template-file InfraProvisioning/main.bicep \
-      #       --parameters virtualNetworkName="${{ secrets.VNET_NAME }}" \
-      #                   AkssubnetName="${{ secrets.AKS_SUBNET_NAME }}" \
-      #                   AppgwsubnetName="${{ secrets.APPGW_SUBNET_NAME }}" \
-      #                   PlesubnetName="${{ secrets.PLE_SUBNET_NAME }}" \
-      #                   windowsAdminPassword="${{ secrets.WINDOWS_ADMIN_PASSWORD }}" \
-      #                   acrName="${{ secrets.ACR_NAME }}" \
-      #                   frontendfqdn="${{ secrets.FRONTEND_FQDN }}" \
-      #                   applicationGateways_appgw_name="${{ secrets.APPGW_NAME }}" \
-      #                   appgwkeyvault="${{ secrets.APPGW_KEYVAULT }}" \
-      #                   storageAccountName="${{ secrets.STORAGE_ACCOUNT_NAME }}" \
-      #                   umiName="${{ secrets.UMI_NAME }}" \
-      #                   Plesubnetid="${{ secrets.PLE_SUBNET_ID }}" \
-      #                   appgwSubnetID="${{ secrets.APPGW_SUBNET_ID }}" \
-      #                   appgwip="${{ secrets.APPGW_IP }}" \
-      #                   managedClusters_aks_cluster_name="${{ secrets.AKS_CLUSTER_NAME }}" \
-      #                   appgwumi="${{ secrets.APPGW_UMI }}" \
-      #                   sslcertname="${{ secrets.SSLCERT_NAME }}"
       - name: Deploy Network
-        if: ${{ github.event.inputs.stage == 'Network' }}
-        run: |
-          echo "Deploying Network..."
-          az deployment group create \
-            --resource-group "$RESOURCE_GROUP" \
-            --mode Incremental \
-            --template-file InfraProvisioning/network.bicep \
-            --parameters virtualNetworkName="$VNET_NAME" \
-                        AkssubnetName="$AKS_SUBNET_NAME" \
-                        PlesubnetName="$PLE_SUBNET_NAME"
+        if: ${{ githu
