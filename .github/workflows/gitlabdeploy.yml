@@ -13,14 +13,14 @@ on:
           - t
           - a
           - p
-        stage:
-          description: 'Which stage to run?'
-          type: choice
-          options:
-            - Network
-            - keyvault
-            - Appgateway
-          default: whatif
+      stage:
+        description: 'Which stage to run?'
+        type: choice
+        options:
+          - Network
+          - keyvault
+          - Appgateway
+        default: whatif
 
 
 
