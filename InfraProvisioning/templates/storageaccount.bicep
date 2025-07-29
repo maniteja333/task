@@ -1,6 +1,6 @@
 param storageAccountName string = 'frontendsa433'
 param location string = resourceGroup().location
-param plesubnetid string
+//param plesubnetid string
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   name: storageAccountName
