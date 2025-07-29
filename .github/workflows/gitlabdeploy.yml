@@ -75,4 +75,4 @@ jobs:
             --resource-group "$RESOURCE_GROUP" \
             --mode Incremental \
             --template-file InfraProvisioning/templates/acr.bicep \
-            --parameters  storageAccountName="mmtacr" 
+            --parameters  acrName="mmtacr" 
