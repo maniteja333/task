@@ -54,4 +54,5 @@ jobs:
             --template-file InfraProvisioning/NetworkProvisioning/VirtualNetwork.bicep \
             --parameters virtualNetworkName="$VNET_NAME" \
                          AkssubnetName="$AKS_SUBNET_NAME" \
-                         PlesubnetName="$PLE_SUBNET_NAME"
+                         PlesubnetName="$PLE_SUBNET_NAME" \
+                         AppgwsubnetName="appgw-subnet"
