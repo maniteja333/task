@@ -3,18 +3,18 @@ param AkssubnetName string
 param AppgwsubnetName string
 param PlesubnetName string
 // param Plesubnetid string 
-param managedClusters_aks_cluster_name string
+// param managedClusters_aks_cluster_name string
 param storageAccountName string 
-param applicationGateways_appgw_name string
-param appgwip string
-param appgwSubnetID string 
-param appgwumi string 
-param appgwkeyvault string 
-param sslcertname string 
-param frontendfqdn string 
-param umiName string 
-@secure()
-param windowsAdminPassword string
+// param applicationGateways_appgw_name string
+// param appgwip string
+// param appgwSubnetID string 
+// param appgwumi string 
+// param appgwkeyvault string 
+// param sslcertname string 
+// param frontendfqdn string 
+// param umiName string 
+// @secure()
+// param windowsAdminPassword string
 param acrName string 
 
 module VirtualNetworkModule './NetworkProvisioning/VirtualNetwork.bicep' = {
