@@ -64,5 +64,5 @@ jobs:
           az deployment group create \
             --resource-group "$RESOURCE_GROUP" \
             --mode Incremental \
-            --template-file InfraProvisioning/NetworkProvisioning/VirtualNetwork.bicep \
+            --template-file InfraProvisioning/templates/storagraccount.bicep \
             --parameters  storageAccountName="Aks-sa" 
