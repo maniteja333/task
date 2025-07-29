@@ -2,7 +2,7 @@ param virtualNetworkName string
 param AkssubnetName string
 param AppgwsubnetName string
 param PlesubnetName string
-param Plesubnetid string 
+//param Plesubnetid string 
 param managedClusters_aks_cluster_name string
 param storageAccountName string 
 param applicationGateways_appgw_name string
@@ -30,7 +30,7 @@ module VirtualNetworkModule './NetworkProvisioning/VirtualNetwork.bicep' = {
  module storageModule './templates/storageaccount.bicep' = {
    name: 'storageDeployment'
    params: {
-    plesubnetid: Plesubnetid
+    //plesubnetid: Plesubnetid
     storageAccountName:  storageAccountName
    }
  }
