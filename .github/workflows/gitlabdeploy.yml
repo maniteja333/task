@@ -17,10 +17,11 @@ on:
         description: 'Which stage to run?'
         type: choice
         options:
-          - Network
+          - Infra&Network
           - Storage
           - acr
-        default: Network
+          - Network
+        default: Infra&Network
 
 jobs:
   deploy:
@@ -43,7 +44,18 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-
+      - name: Deploy Infra&Network
+        if: ${{ github.event.inputs.stage == 'Infra&Network' }}
+        run: |
+          echo "Deploying Network..."
+          az deployment group create \
+            --resource-group "$RESOURCE_GROUP" \
+            --mode Incremental \
+            --template-file InfraProvisioning/main.bicep" \
+            --parameters virtualNetworkName="$VNET_NAME" \
+                         AkssubnetName="$AKS_SUBNET_NAME" \
+                         PlesubnetName="$PLE_SUBNET_NAME" \
+                         AppgwsubnetName="appgw-subnet"
       - name: Deploy Network
         if: ${{ github.event.inputs.stage == 'Network' }}
         run: |
@@ -55,7 +67,9 @@ jobs:
             --parameters virtualNetworkName="$VNET_NAME" \
                          AkssubnetName="$AKS_SUBNET_NAME" \
                          PlesubnetName="$PLE_SUBNET_NAME" \
-                         AppgwsubnetName="appgw-subnet"
+                         AppgwsubnetName="appgw-subnet" \
+                         storageAccountName="mmtaks433" \
+                         acrName="mmtacr"
 
       - name: Deploy Storage
         if: ${{ github.event.inputs.stage == 'Storage' }}
@@ -67,7 +81,7 @@ jobs:
             --template-file InfraProvisioning/templates/storageaccount.bicep \
             --parameters  storageAccountName="mmtaks433" 
 
-      - name: Deploy Storage
+      - name: Deploy acr
         if: ${{ github.event.inputs.stage == 'acr' }}
         run: |
           echo "Deploying acr..."
