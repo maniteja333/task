@@ -56,7 +56,8 @@ jobs:
                          AkssubnetName="$AKS_SUBNET_NAME" \
                          PlesubnetName="$PLE_SUBNET_NAME" \
                          AppgwsubnetName="appgw-subnet" \
-                         acrName="mmtacr"
+                         acrName="mmtacr" \
+                         storageAccountName="mmtaks433" 
       - name: Deploy Network
         if: ${{ github.event.inputs.stage == 'Network' }}
         run: |
@@ -69,9 +70,7 @@ jobs:
                          AkssubnetName="$AKS_SUBNET_NAME" \
                          PlesubnetName="$PLE_SUBNET_NAME" \
                          AppgwsubnetName="appgw-subnet" \
-                         storageAccountName="mmtaks433" \
-                         acrName="mmtacr" \
-                         storageAccountName="mmtaks433" 
+               
 
       - name: Deploy Storage
         if: ${{ github.event.inputs.stage == 'Storage' }}
