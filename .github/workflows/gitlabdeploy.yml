@@ -114,6 +114,6 @@ jobs:
           az deployment group create \
             --resource-group "$RESOURCE_GROUP" \
             --mode Incremental \
-            --template-file InfraProvisioning/templates/aks.bicep \
+            --template-file InfraProvisioning/templates/trafficmanager.bicep \
             --parameters  trafficManager="learcloud" 
                           
