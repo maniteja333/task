@@ -95,7 +95,7 @@ resource applicationGateways_appgw_name_resource 'Microsoft.Network/applicationG
         properties: {
           backendAddresses: [
             {
-              ipAddress: '10.0.0.5'
+              ipAddress: '20.105.96.90'
             }
           ]
         }
