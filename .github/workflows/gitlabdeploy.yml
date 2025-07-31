@@ -21,6 +21,7 @@ on:
           - Storage
           - acr
           - Network
+          - Aks
         default: Infra&Network
 
 jobs:
