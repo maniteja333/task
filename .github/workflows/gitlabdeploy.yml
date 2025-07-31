@@ -99,7 +99,7 @@ jobs:
             --resource-group "$RESOURCE_GROUP" \
             --mode Incremental \
             --template-file InfraProvisioning/templates/aks.bicep \
-            --parameters  acrName="mmtacr"  \
+            --parameters  acrName="mmtacr" \
                           managedClusters_aks_cluster_name="mmt-aks" \
                           windowsAdminPassword="maniteja@123" \
                           --debug 
