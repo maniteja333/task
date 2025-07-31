@@ -8,7 +8,7 @@ resource acr 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' existin
 
 }
 
-param virtualNetworks_aks_vnet_externalid string = '/subscriptions/816733e9-6336-48bf-8c5f-d2c37a3bbdad/resourceGroups/mmt-aks/providers/Microsoft.Network/virtualNetworks/aks-vnet'
+param virtualNetworks_aks_vnet_externalid string = '/subscriptions/20e67141-3faf-491a-bb15-d9df98bb8021/resourceGroups/sa-rg/providers/Microsoft.Network/virtualNetworks/aks-vnet'
 param adminuser string  = 'adminuser'
 resource managedClusters_aks_cluster_name_resource 'Microsoft.ContainerService/managedClusters@2025-02-01' = {
   name: managedClusters_aks_cluster_name
