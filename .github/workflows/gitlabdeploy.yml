@@ -23,6 +23,7 @@ on:
           - Network
           - Aks
           - trafficManager
+          - ApplicationGateway
         default: Infra&Network
 
 jobs:
