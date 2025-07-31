@@ -58,6 +58,8 @@ jobs:
                          AppgwsubnetName="appgw-subnet" \
                          acrName="mmtacr" \
                          storageAccountName="mmtaks433" 
+                         managedClusters_aks_cluster_name="mmt-aks" \
+                         windowsAdminPassword="maniteja@1234567" \
       - name: Deploy Network
         if: ${{ github.event.inputs.stage == 'Network' }}
         run: |
@@ -102,4 +104,4 @@ jobs:
             --parameters  acrName="mmtacr" \
                           managedClusters_aks_cluster_name="mmt-aks" \
                           windowsAdminPassword="maniteja@1234567" \
-                          --debug 
+                          -
