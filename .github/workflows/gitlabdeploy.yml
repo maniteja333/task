@@ -115,5 +115,5 @@ jobs:
             --resource-group "$RESOURCE_GROUP" \
             --mode Incremental \
             --template-file InfraProvisioning/templates/trafficmanager.bicep \
-            --parameters  trafficManager="learcloud" 
+            --parameters  trafficManagerName="learcloud" 
                           
