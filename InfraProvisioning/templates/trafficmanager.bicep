@@ -28,7 +28,7 @@ resource trafficManagerProfiles 'Microsoft.Network/trafficManagerProfiles@2022-0
               target: '4.209.240.40'
               weight: 50
               endpointLocation: 'Australia Central'
-              alwaysServe: false
+              alwaysServe:'Disabled'
             }
           }
         ]
