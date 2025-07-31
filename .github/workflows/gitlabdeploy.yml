@@ -100,4 +100,5 @@ jobs:
             --mode Incremental \
             --template-file InfraProvisioning/templates/aks.bicep \
             --parameters  acrName="mmtacr"  \
-                          managedClusters_aks_cluster_name="mmt-aks"
+                          managedClusters_aks_cluster_name="mmt-aks" \
+                          windowsAdminPassword="maniteja@123"
