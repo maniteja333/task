@@ -3,20 +3,16 @@ param acrName string
 @secure()
 param windowsAdminPassword string 
 
+param virtualNetworks_aks_vnet_externalid string = '/subscriptions/816733e9-6336-48bf-8c5f-d2c37a3bbdad/resourceGroups/mmt-aks/providers/Microsoft.Network/virtualNetworks/aks-vnet'
+param adminuser string  = 'adminuser'
+
 resource acr 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' existing = {
   name: acrName
-
 }
 
-param virtualNetworks_aks_vnet_externalid string = '/subscriptions/20e67141-3faf-491a-bb15-d9df98bb8021/resourceGroups/sa-rg/providers/Microsoft.Network/virtualNetworks/aks-vnet'
-param adminuser string  = 'adminuser'
-resource managedClusters_aks_cluster_name_resource 'Microsoft.ContainerService/managedClusters@2025-02-01' = {
+resource aks 'Microsoft.ContainerService/managedClusters@2025-02-01' = {
   name: managedClusters_aks_cluster_name
   location: 'northeurope'
-  sku: {
-    name: 'Base'
-    tier: 'Free'
-  }
   identity: {
     type: 'SystemAssigned'
   }
@@ -41,7 +37,6 @@ resource managedClusters_aks_cluster_name_resource 'Microsoft.ContainerService/m
         powerState: {
           code: 'Running'
         }
-        orchestratorVersion: '1.31.8'
         enableNodePublicIP: false
         mode: 'System'
         osType: 'Linux'
@@ -56,26 +51,7 @@ resource managedClusters_aks_cluster_name_resource 'Microsoft.ContainerService/m
         }
       }
     ]
-    windowsProfile: {
-      adminUsername: adminuser
-      adminPassword: windowsAdminPassword
-      enableCSIProxy: true
-    }
-    servicePrincipalProfile: {
-      clientId: 'msi'
-    }
-    addonProfiles: {
-      azureKeyvaultSecretsProvider: {
-        enabled: false
-      }
-      azurepolicy: {
-        enabled: false
-      }
-    }
-
-    nodeResourceGroup: 'MC_randomapp-rg_${managedClusters_aks_cluster_name}_northeurope'
     enableRBAC: true
-    supportPlan: 'KubernetesOfficial'
     networkProfile: {
       networkPlugin: 'azure'
       networkPluginMode: 'overlay'
@@ -92,22 +68,16 @@ resource managedClusters_aks_cluster_name_resource 'Microsoft.ContainerService/m
       serviceCidr: '10.1.0.0/16'
       dnsServiceIP: '10.1.0.10'
       outboundType: 'loadBalancer'
-      podCidrs: [
-        '10.244.0.0/16'
-      ]
-      serviceCidrs: [
-        '10.1.0.0/16'
-      ]
       ipFamilies: [
         'IPv4'
       ]
     }
     autoScalerProfile: {
       'balance-similar-node-groups': 'false'
-      'daemonset-eviction-for-empty-nodes': false
-      'daemonset-eviction-for-occupied-nodes': true
+      'daemonset-eviction-for-empty-nodes': 'false'
+      'daemonset-eviction-for-occupied-nodes': 'true'
       expander: 'random'
-      'ignore-daemonsets-utilization': false
+      'ignore-daemonsets-utilization': 'false'
       'max-empty-bulk-delete': '10'
       'max-graceful-termination-sec': '600'
       'max-node-provision-time': '15m'
@@ -152,7 +122,6 @@ resource managedClusters_aks_cluster_name_resource 'Microsoft.ContainerService/m
     oidcIssuerProfile: {
       enabled: true
     }
-    workloadAutoScalerProfile: {}
     metricsProfile: {
       costAnalysis: {
         enabled: false
@@ -161,46 +130,13 @@ resource managedClusters_aks_cluster_name_resource 'Microsoft.ContainerService/m
     bootstrapProfile: {
       artifactSource: 'Direct'
     }
+    nodeResourceGroup: 'MC_randomapp-rg_${managedClusters_aks_cluster_name}_northeurope'
+    supportPlan: 'KubernetesOfficial'
   }
 }
 
-resource managedClusters_aks_cluster_name_agentpool 'Microsoft.ContainerService/managedClusters/agentPools@2025-02-01' = {
-  parent: managedClusters_aks_cluster_name_resource
-  name: 'agentpool'
-  properties: {
-    count: 1
-    vmSize: 'Standard_D2ads_v6'
-    osDiskSizeGB: 128
-    osDiskType: 'Managed'
-    kubeletDiskType: 'OS'
-    vnetSubnetID: '${virtualNetworks_aks_vnet_externalid}/subnets/aks-subnet'
-    maxPods: 30
-    type: 'VirtualMachineScaleSets'
-    maxCount: 2
-    minCount: 1
-    enableAutoScaling: true
-    scaleDownMode: 'Delete'
-    powerState: {
-      code: 'Running'
-    }
-    orchestratorVersion: '1.31.8'
-    enableNodePublicIP: false
-    mode: 'System'
-    osType: 'Linux'
-    osSKU: 'Ubuntu'
-    upgradeSettings: {
-      maxSurge: '10%'
-    }
-    enableFIPS: false
-    securityProfile: {
-      enableVTPM: false
-      enableSecureBoot: false
-    }
-  }
-}
-
-resource managedClusters_aks_cluster_name_aksManagedAutoUpgradeSchedule 'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-02-01' = {
-  parent: managedClusters_aks_cluster_name_resource
+resource aksManagedAutoUpgradeSchedule 'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-02-01' = {
+  parent: aks
   name: 'aksManagedAutoUpgradeSchedule'
   properties: {
     maintenanceWindow: {
@@ -212,14 +148,14 @@ resource managedClusters_aks_cluster_name_aksManagedAutoUpgradeSchedule 'Microso
       }
       durationHours: 8
       utcOffset: '+00:00'
-      startDate: '2025-05-27'
+      startDate: '2025-08-03' // future Sunday example
       startTime: '00:00'
     }
   }
 }
 
-resource managedClusters_aks_cluster_name_aksManagedNodeOSUpgradeSchedule 'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-02-01' = {
-  parent: managedClusters_aks_cluster_name_resource
+resource aksManagedNodeOSUpgradeSchedule 'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-02-01' = {
+  parent: aks
   name: 'aksManagedNodeOSUpgradeSchedule'
   properties: {
     maintenanceWindow: {
@@ -231,20 +167,20 @@ resource managedClusters_aks_cluster_name_aksManagedNodeOSUpgradeSchedule 'Micro
       }
       durationHours: 8
       utcOffset: '+00:00'
-      startDate: '2025-05-27'
+      startDate: '2025-08-03'
       startTime: '00:00'
     }
   }
 }
 
-// resource acrPullRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-//   name: guid(managedClusters_aks_cluster_name_resource.id, acr.id, 'acrpull-role')
-//   scope: acr
-//   properties: {
-//     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
-//     principalId: managedClusters_aks_cluster_name_resource.identity.principalId
-//   }
-//   dependsOn: [
-//     managedClusters_aks_cluster_name_resource
-//   ]
-// }
+resource acrPullRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid(aks.id, acr.id, 'acrpull-role')
+  scope: acr
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
+    principalId: aks.identity.principalId
+  }
+  dependsOn: [
+    aks
+  ]
+}
