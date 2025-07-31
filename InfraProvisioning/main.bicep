@@ -5,14 +5,14 @@ param PlesubnetName string
 // param Plesubnetid string 
 param managedClusters_aks_cluster_name string
 param storageAccountName string 
-// param applicationGateways_appgw_name string
-// param appgwip string
-// param appgwSubnetID string 
-// param appgwumi string 
-// param appgwkeyvault string 
-// param sslcertname string 
-// param frontendfqdn string 
-// param umiName string 
+param applicationGateways_appgw_name string
+param appgwip string
+param appgwSubnetID string 
+param appgwumi string 
+param appgwkeyvault string 
+param sslcertname string 
+param frontendfqdn string 
+param umiName string 
 param trafficManagerName string
  @secure()
 param windowsAdminPassword string
@@ -57,18 +57,18 @@ module ATMModule './templates/trafficmanager.bicep' = {
      trafficManagerName: trafficManagerName
   }
 }
-// module AppGEModule './templates/appgateway.bicep' = {
-//   name: 'AppgatewayDeployment'
-//   params: {
-//      applicationGateways_appgw_name : applicationGateways_appgw_name
-//       appgwip :appgwip
-//       appgwSubnetID :appgwSubnetID 
-//       appgwumi :appgwumi
-//       appgwkeyvault :appgwkeyvault 
-//       sslcertname : sslcertname 
-//       frontendfqdn :frontendfqdn
-//         }
-// }
+module AppGEModule './templates/appgateway.bicep' = {
+  name: 'AppgatewayDeployment'
+  params: {
+     applicationGateways_appgw_name : applicationGateways_appgw_name
+      appgwip :appgwip
+      appgwSubnetID :appgwSubnetID 
+      appgwumi :appgwumi
+      appgwkeyvault :appgwkeyvault 
+      sslcertname : sslcertname 
+      frontendfqdn :frontendfqdn
+        }
+}
 
 // module Umi './templates/umi.bicep' = {
 //   name: 'UmiDeployment'

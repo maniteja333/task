@@ -62,6 +62,13 @@ jobs:
                          managedClusters_aks_cluster_name="mmt-aks" \
                          windowsAdminPassword="maniteja@1234567" 
                          trafficManagerName="learcloud"
+                          applicationGateways_appgw_name="appgw" \
+                          appgwip="4.209.240.40" \ 
+                          appgwSubnetID="/subscriptions/20e67141-3faf-491a-bb15-d9df98bb8021/resourceGroups/sa-rg/providers/Microsoft.Network/virtualNetworks/aks-vnet/subnets/appgw-subnet" \ 
+                          appgwumi="appgwumi" \
+                          appgwkeyvault="appgw1kv" \ 
+                          sslcertname="learncloud" \ 
+                          frontendfqdn="mmtaks433.z16.web.core.windows.net"
       - name: Deploy Network
         if: ${{ github.event.inputs.stage == 'Network' }}
         run: |
@@ -115,5 +122,21 @@ jobs:
             --resource-group "$RESOURCE_GROUP" \
             --mode Incremental \
             --template-file InfraProvisioning/templates/trafficmanager.bicep \
-            --parameters  trafficManagerName="learcloud" 
+            --parameters  trafficManagerName="learcloud"
+
+      - name: Deploy ApplicationGateway
+        if: ${{ github.event.inputs.stage == 'ApplicationGateway' }}
+        run: |
+          echo "Deploying trafficManager..."
+          az deployment group create \
+            --resource-group "$RESOURCE_GROUP" \
+            --mode Incremental \
+            --template-file InfraProvisioning/templates/appgw.bicep \
+            --parameters    applicationGateways_appgw_name="appgw" \
+                            appgwip="4.209.240.40" \ 
+                            appgwSubnetID="/subscriptions/20e67141-3faf-491a-bb15-d9df98bb8021/resourceGroups/sa-rg/providers/Microsoft.Network/virtualNetworks/aks-vnet/subnets/appgw-subnet" \ 
+                            appgwumi="appgwumi" \
+                            appgwkeyvault="appgw1kv" \ 
+                            sslcertname="learncloud" \ 
+                            frontendfqdn="mmtaks433.z16.web.core.windows.net" 
                           
