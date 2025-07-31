@@ -72,27 +72,7 @@ resource aks 'Microsoft.ContainerService/managedClusters@2025-02-01' = {
         'IPv4'
       ]
     }
-    autoScalerProfile: {
-      'balance-similar-node-groups': 'false'
-      'daemonset-eviction-for-empty-nodes': 'false'
-      'daemonset-eviction-for-occupied-nodes': 'true'
-      expander: 'random'
-      'ignore-daemonsets-utilization': 'false'
-      'max-empty-bulk-delete': '10'
-      'max-graceful-termination-sec': '600'
-      'max-node-provision-time': '15m'
-      'max-total-unready-percentage': '45'
-      'new-pod-scale-up-delay': '0s'
-      'ok-total-unready-count': '3'
-      'scale-down-delay-after-add': '10m'
-      'scale-down-delay-after-delete': '10s'
-      'scale-down-delay-after-failure': '3m'
-      'scale-down-unneeded-time': '10m'
-      'scale-down-unready-time': '20m'
-      'scale-down-utilization-threshold': '0.5'
-      'scan-interval': '10s'
-      'skip-nodes-with-local-storage': 'false'
-      'skip-nodes-with-system-pods': 'true'
+
     }
     autoUpgradeProfile: {
       upgradeChannel: 'patch'
@@ -135,24 +115,7 @@ resource aks 'Microsoft.ContainerService/managedClusters@2025-02-01' = {
   }
 }
 
-resource aksManagedAutoUpgradeSchedule 'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-02-01' = {
-  parent: aks
-  name: 'aksManagedAutoUpgradeSchedule'
-  properties: {
-    maintenanceWindow: {
-      schedule: {
-        weekly: {
-          intervalWeeks: 1
-          dayOfWeek: 'Sunday'
-        }
-      }
-      durationHours: 8
-      utcOffset: '+00:00'
-      startDate: '2025-08-03' // future Sunday example
-      startTime: '00:00'
-    }
-  }
-}
+
 
 resource aksManagedNodeOSUpgradeSchedule 'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2025-02-01' = {
   parent: aks
