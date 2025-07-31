@@ -101,5 +101,5 @@ jobs:
             --template-file InfraProvisioning/templates/aks.bicep \
             --parameters  acrName="mmtacr" \
                           managedClusters_aks_cluster_name="mmt-aks" \
-                          windowsAdminPassword="maniteja@123" \
+                          windowsAdminPassword="maniteja@1234567" \
                           --debug 
