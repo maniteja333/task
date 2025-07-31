@@ -22,6 +22,7 @@ on:
           - acr
           - Network
           - Aks
+          - trafficManager
         default: Infra&Network
 
 jobs:
