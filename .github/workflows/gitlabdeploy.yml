@@ -57,7 +57,7 @@ jobs:
                          PlesubnetName="$PLE_SUBNET_NAME" \
                          AppgwsubnetName="appgw-subnet" \
                          acrName="mmtacr" \
-                         storageAccountName="mmtaks433" 
+                         storageAccountName="mmtaks433" \
                          managedClusters_aks_cluster_name="mmt-aks" \
                          windowsAdminPassword="maniteja@1234567" 
       - name: Deploy Network
