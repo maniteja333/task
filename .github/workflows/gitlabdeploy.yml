@@ -60,6 +60,7 @@ jobs:
                          storageAccountName="mmtaks433" \
                          managedClusters_aks_cluster_name="mmt-aks" \
                          windowsAdminPassword="maniteja@1234567" 
+                         trafficManagerName="learcloud"
       - name: Deploy Network
         if: ${{ github.event.inputs.stage == 'Network' }}
         run: |
@@ -104,4 +105,14 @@ jobs:
             --parameters  acrName="mmtacr" \
                           managedClusters_aks_cluster_name="mmt-aks" \
                           windowsAdminPassword="maniteja@1234567" \
-                          -
+
+      - name: Deploy trafficManager
+        if: ${{ github.event.inputs.stage == 'trafficManager' }}
+        run: |
+          echo "Deploying trafficManager..."
+          az deployment group create \
+            --resource-group "$RESOURCE_GROUP" \
+            --mode Incremental \
+            --template-file InfraProvisioning/templates/aks.bicep \
+            --parameters  trafficManager="learcloud" 
+                          

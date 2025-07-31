@@ -13,6 +13,7 @@ param storageAccountName string
 // param sslcertname string 
 // param frontendfqdn string 
 // param umiName string 
+param trafficManagerName string
  @secure()
 param windowsAdminPassword string
 param acrName string 
@@ -50,7 +51,12 @@ module AcrModule './templates/acr.bicep' = {
      acrName: acrName
   }
 }
-
+module ATMModule './templates/trafficmanager.bicep' = {
+  name: 'ATMDeployment'
+  params: {
+     trafficManagerName: trafficManagerName
+  }
+}
 // module AppGEModule './templates/appgateway.bicep' = {
 //   name: 'AppgatewayDeployment'
 //   params: {
