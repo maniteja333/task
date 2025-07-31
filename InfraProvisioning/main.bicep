@@ -3,7 +3,7 @@ param AkssubnetName string
 param AppgwsubnetName string
 param PlesubnetName string
 // param Plesubnetid string 
-// param managedClusters_aks_cluster_name string
+param managedClusters_aks_cluster_name string
 param storageAccountName string 
 // param applicationGateways_appgw_name string
 // param appgwip string
@@ -13,8 +13,8 @@ param storageAccountName string
 // param sslcertname string 
 // param frontendfqdn string 
 // param umiName string 
-// @secure()
-// param windowsAdminPassword string
+ @secure()
+param windowsAdminPassword string
 param acrName string 
 
 module VirtualNetworkModule './NetworkProvisioning/VirtualNetwork.bicep' = {
@@ -35,14 +35,14 @@ module VirtualNetworkModule './NetworkProvisioning/VirtualNetwork.bicep' = {
    }
  }
 
-// module AksModule './templates/aks.bicep' = {
-//   name: 'AksDeployment'
-//   params: {
-//      managedClusters_aks_cluster_name : managedClusters_aks_cluster_name
-//      windowsAdminPassword : windowsAdminPassword
-//      acrName:acrName
-//   }
-// }
+ module AksModule './templates/aks.bicep' = {
+   name: 'AksDeployment'
+   params: {
+      managedClusters_aks_cluster_name : managedClusters_aks_cluster_name
+      windowsAdminPassword : windowsAdminPassword
+      acrName:acrName
+   }
+ }
 
 module AcrModule './templates/acr.bicep' = {
   name: 'AcrDeployment'
