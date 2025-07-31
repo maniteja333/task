@@ -134,7 +134,7 @@ jobs:
             --template-file InfraProvisioning/templates/appgateway.bicep \
             --parameters \
                 applicationGateways_appgw_name="appgw" \
-                appgwip="appgw-pip" \
+                appgwip="appgw-ip" \
                 appgwSubnetID="/subscriptions/20e67141-3faf-491a-bb15-d9df98bb8021/resourceGroups/sa-rg/providers/Microsoft.Network/virtualNetworks/aks-vnet/subnets/appgw-subnet" \
                 appgwUmi="appgwumi" \
                 appgwKeyVault="appgw1kv" \
