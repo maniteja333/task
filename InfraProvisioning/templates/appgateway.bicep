@@ -5,7 +5,7 @@ param appgwumi string
 param appgwkeyvault string
 param sslcertname string
 param frontendfqdn string
-
+param location string
 resource Pip 'Microsoft.Network/publicIPAddresses@2024-05-01' existing = {
   name: appgwip
 }
@@ -23,7 +23,7 @@ resource appgw_keyvault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
 
 resource applicationGateways_appgw_name_resource 'Microsoft.Network/applicationGateways@2024-05-01' = {
   name: applicationGateways_appgw_name
-  location: 'northeurope'
+  location: location
   zones: [ '1', '2', '3' ]
   identity: {
     type: 'UserAssigned'
