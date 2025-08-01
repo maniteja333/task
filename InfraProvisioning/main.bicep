@@ -17,7 +17,7 @@ param trafficManagerName string
  @secure()
 param windowsAdminPassword string
 param acrName string 
-
+param location string
 module VirtualNetworkModule './NetworkProvisioning/VirtualNetwork.bicep' = {
   name: 'NetworkDeployment'
   params: {
@@ -67,6 +67,7 @@ module AppGEModule './templates/appgateway.bicep' = {
       appgwkeyvault :appgwkeyvault 
       sslcertname : sslcertname 
       frontendfqdn :frontendfqdn
+      location : location
         }
 }
 
