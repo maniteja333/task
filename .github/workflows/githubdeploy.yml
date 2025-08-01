@@ -140,4 +140,22 @@ jobs:
                 appgwkeyvault="appgw1kv" \
                 sslcertname="learncloud" \
                 frontendfqdn="mmtaks433.z16.web.core.windows.net" 
+
+      - name: Deploy ApplicationGateway
+        if: ${{ github.event.inputs.stage == 'ApplicationGateway2' }}
+        run: |
+          echo "Deploying Application Gateway..."
+          az deployment group create \
+            --resource-group "$RESOURCE_GROUP" \
+            --mode Incremental \
+            --template-file InfraProvisioning/templates/appgateway.bicep \
+            --parameters \
+                applicationGateways_appgw_name="appgw2" \
+                appgwip="appgw-ip" \
+                appgwSubnetID="/subscriptions/20e67141-3faf-491a-bb15-d9df98bb8021/resourceGroups/sa-rg/providers/Microsoft.Network/virtualNetworks/aks-vnet/subnets/appgw-subnet" \
+                appgwumi="appgwumi" \
+                appgwkeyvault="appgw1kv" \
+                sslcertname="learncloud" \
+                frontendfqdn="mmtaks433.z16.web.core.windows.net" 
+                            
                             
