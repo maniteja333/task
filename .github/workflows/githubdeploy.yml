@@ -140,7 +140,8 @@ jobs:
                 appgwumi="appgwumi" \
                 appgwkeyvault="appgw1kv" \
                 sslcertname="learncloud" \
-                frontendfqdn="mmtaks433.z16.web.core.windows.net" 
+                frontendfqdn="mmtaks433.z16.web.core.windows.net" \
+                location="northeurope"
 
       - name: Deploy ApplicationGateway2
         if: ${{ github.event.inputs.stage == 'ApplicationGateway2' }}
@@ -157,6 +158,7 @@ jobs:
                 appgwumi="appgwumi" \
                 appgwkeyvault="appgw1kv" \
                 sslcertname="learncloud" \
-                frontendfqdn="mmtaks433.z16.web.core.windows.net" 
+                frontendfqdn="mmtaks433.z16.web.core.windows.net" \
+                location="westeurope"
                             
                             
