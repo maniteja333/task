@@ -148,7 +148,7 @@ jobs:
         run: |
           echo "Deploying Application Gateway..."
           az deployment group create \
-            --resource-group "appgw2" \
+            --resource-group "$RESOURCE_GROUP" \
             --mode Incremental \
             --template-file InfraProvisioning/templates/appgateway.bicep \
             --parameters \
