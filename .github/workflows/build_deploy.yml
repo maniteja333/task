@@ -64,17 +64,17 @@ jobs:
           docker build -t $ACR_IMAGE .
           docker push $ACR_IMAGE
 
-      - name: Get AKS Credentials
-        run: |
-          az aks get-credentials \
-            --resource-group $RESOURCE_GROUP \
-            --name $AKS_CLUSTER \
-            --overwrite-existing \
-            --file kubeconfig
-
+      - name: Set AKS context
+        uses: azure/aks-set-context@v3
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          cluster-name: mmt-aks
+          resource-group: sa-rg
+      
       - name: Deploy to AKS
         uses: azure/k8s-deploy@v4
         with:
-          kubeconfig: kubeconfig
+          namespace: default
           manifests: |
             CICD/deployment.yml
+
