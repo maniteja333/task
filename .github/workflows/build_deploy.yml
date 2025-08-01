@@ -1,0 +1,80 @@
+name: Build and Deploy App
+
+on:
+  workflow_dispatch:  # manual trigger
+
+env:
+  AZURE_STORAGE_ACCOUNT: mmtaks433
+  CONTAINER_NAME: '$web'
+  FILE_NAME: index.html
+  ACR_NAME: mmtacr
+  ACR_IMAGE: mmtacr.azurecr.io/myapp:latest2
+  RESOURCE_GROUP: sa-rg
+  AKS_CLUSTER: mmt-aks
+
+jobs:
+  upload-frontend:
+    name: Build & Deploy to FE
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Upload index.html to $web container
+        run: |
+          ACCOUNT_KEY=$(az storage account keys list \
+            --account-name $AZURE_STORAGE_ACCOUNT \
+            --query "[0].value" -o tsv)
+
+          az storage blob upload \
+            --account-name $AZURE_STORAGE_ACCOUNT \
+            --account-key $ACCOUNT_KEY \
+            --container-name $CONTAINER_NAME \
+            --file CICD/${{ env.FILE_NAME }} \
+            --name index.html \
+            --overwrite true
+
+  deploy-api:
+    name: Build & Deploy API
+    runs-on: ubuntu-latest
+    needs: upload-frontend
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Docker Build and Push to ACR
+        run: |
+          az acr login --name $ACR_NAME
+          cd CICD
+          docker build -t $ACR_IMAGE .
+          docker push $ACR_IMAGE
+
+      - name: Get AKS Credentials
+        run: |
+          az aks get-credentials \
+            --resource-group $RESOURCE_GROUP \
+            --name $AKS_CLUSTER \
+            --overwrite-existing \
+            --file kubeconfig
+
+      - name: Deploy to AKS
+        uses: azure/k8s-deploy@v4
+        with:
+          kubeconfig: kubeconfig
+          manifests: |
+            CICD/deployment.yml
