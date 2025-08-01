@@ -24,6 +24,7 @@ on:
           - Aks
           - trafficManager
           - ApplicationGateway
+          - ApplicationGateway2
         default: Infra&Network
 
 jobs:
@@ -141,7 +142,7 @@ jobs:
                 sslcertname="learncloud" \
                 frontendfqdn="mmtaks433.z16.web.core.windows.net" 
 
-      - name: Deploy ApplicationGateway
+      - name: Deploy ApplicationGateway2
         if: ${{ github.event.inputs.stage == 'ApplicationGateway2' }}
         run: |
           echo "Deploying Application Gateway..."
