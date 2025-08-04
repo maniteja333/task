@@ -63,6 +63,6 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -out=tfplan
 
-      # - name: Terraform Apply
-      #   if: github.event_name == 'workflow_dispatch'
-      #   run: terraform apply -input=false -auto-approve tfplan
+      - name: Terraform Apply
+        if: github.event_name == 'workflow_dispatch'
+        run: terraform apply -input=false -auto-approve tfplan
