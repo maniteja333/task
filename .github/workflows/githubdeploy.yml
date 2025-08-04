@@ -93,6 +93,15 @@ jobs:
             --mode Incremental \
             --template-file InfraProvisioning/templates/storageaccount.bicep \
             --parameters  storageAccountName="mmtaks433" 
+      - name: Deploy Storage
+        if: ${{ github.event.inputs.stage == 'Storage' }}
+        run: |
+          echo "Deploying Storage..."
+          az deployment group create \
+            --resource-group "$RESOURCE_GROUP" \
+            --mode Incremental \
+            --template-file InfraProvisioning/templates/storageaccount.bicep \
+            --parameters  storageAccountName="mmtaks4332" 
 
       - name: Deploy acr
         if: ${{ github.event.inputs.stage == 'acr' }}
