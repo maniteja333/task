@@ -80,10 +80,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   image_cleaner_enabled        = true
   image_cleaner_interval_hours = 168
 
-  windows_profile {
-    admin_username = var.windows_admin_username
-    admin_password = var.windows_admin_password
-  }
+
 
   lifecycle {
     ignore_changes = [
