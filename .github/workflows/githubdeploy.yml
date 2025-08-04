@@ -1,31 +1,22 @@
-name: Deploy Bicep Infrastructure
+name: Terraform AKS Deploy
 
 on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Select environment to deploy'
+        description: "Target environment"
         required: true
-        default: 'd'
         type: choice
+        default: d
         options:
           - d
           - t
           - a
           - p
-      stage:
-        description: 'Which stage to run?'
-        type: choice
-        options:
-          - Infra&Network
-          - Storage
-          - acr
-          - Network
-          - Aks
-          - trafficManager
-          - ApplicationGateway
-          - ApplicationGateway2
-        default: Infra&Network
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   deploy:
@@ -33,132 +24,53 @@ jobs:
     environment: vpps-${{ github.event.inputs.environment }}
 
     env:
+      # propagate the selected environment
       ENV: ${{ github.event.inputs.environment }}
-      RESOURCE_GROUP: ${{ vars.RESOURCE_GROUP }}
-      VNET_NAME: ${{ vars.VNET_NAME }}
-      AKS_SUBNET_NAME: ${{ vars.AKS_SUBNET_NAME }}
-      PLE_SUBNET_NAME: ${{ vars.PLE_SUBNET_NAME }}
+
+      # Terraform variables via TF_VAR_ so terraform sees them
+      TF_VAR_subscription_id: ${{ vars.SUBSCRIPTION_ID }}
+      TF_VAR_resource_group_name: ${{ vars.RESOURCE_GROUP_NAME }}
+      TF_VAR_location: ${{ vars.LOCATION }}
+      TF_VAR_aks_cluster_name: mmt-aks-${{ github.event.inputs.environment }}
+      TF_VAR_node_vm_size: ${{ vars.NODE_VM_SIZE }}
+      TF_VAR_node_pool_min_count: ${{ vars.NODE_POOL_MIN_COUNT }}
+      TF_VAR_node_pool_max_count: ${{ vars.NODE_POOL_MAX_COUNT }}
+      TF_VAR_k8s_version: ${{ vars.K8S_VERSION }}
+      TF_VAR_subnet_id: ${{ vars.SUBNET_ID }}
+      TF_VAR_acr_name: ${{ vars.ACR_NAME }}
+      TF_VAR_windows_admin_username: ${{ vars.WINDOWS_ADMIN_USERNAME }}
+      # password from secret (sensitive)
+      TF_VAR_windows_admin_password: ${{ secrets.WINDOWS_ADMIN_PASSWORD }}
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Azure Login
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+
+      - name: Azure login via OIDC
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-      - name: Deploy Infra&Network
-        if: ${{ github.event.inputs.stage == 'Infra&Network' }}
-        run: |
-          echo "Deploying Infra&Network..."
-          az deployment group create \
-            --resource-group "$RESOURCE_GROUP" \
-            --mode Incremental \
-            --template-file "InfraProvisioning/main.bicep" \
-            --parameters virtualNetworkName="$VNET_NAME" \
-                         AkssubnetName="$AKS_SUBNET_NAME" \
-                         PlesubnetName="$PLE_SUBNET_NAME" \
-                         AppgwsubnetName="appgw-subnet" \
-                         acrName="mmtacr" \
-                         storageAccountName="mmtaks433" \
-                         managedClusters_aks_cluster_name="mmt-aks" \
-                         windowsAdminPassword="maniteja@1234567" 
-                         trafficManagerName="learcloud"
-                          applicationGateways_appgw_name="appgw" \
-                          appgwpip="appgw-pip" \
-                          appgwSubnetID="/subscriptions/20e67141-3faf-491a-bb15-d9df98bb8021/resourceGroups/sa-rg/providers/Microsoft.Network/virtualNetworks/aks-vnet/subnets/appgw-subnet" \
-                          appgwUmi="appgwumi" \
-                          appgwKeyVault="appgw1kv" \
-                          sslcertname="learncloud" \
-                          frontendfqdn="mmtaks433.z16.web.core.windows.net" 
-      - name: Deploy Network
-        if: ${{ github.event.inputs.stage == 'Network' }}
-        run: |
-          echo "Deploying Network..."
-          az deployment group create \
-            --resource-group "$RESOURCE_GROUP" \
-            --mode Incremental \
-            --template-file InfraProvisioning/NetworkProvisioning/VirtualNetwork.bicep \
-            --parameters virtualNetworkName="$VNET_NAME" \
-                         AkssubnetName="$AKS_SUBNET_NAME" \
-                         PlesubnetName="$PLE_SUBNET_NAME" \
-                         AppgwsubnetName="appgw-subnet" \
-               
+          subscription-id: ${{ vars.SUBSCRIPTION_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}  # assumes federated credential is configured
 
-      - name: Deploy Storage
-        if: ${{ github.event.inputs.stage == 'Storage' }}
-        run: |
-          echo "Deploying Storage..."
-          az deployment group create \
-            --resource-group "$RESOURCE_GROUP" \
-            --mode Incremental \
-            --template-file InfraProvisioning/templates/storageaccount.bicep \
-            --parameters  storageAccountName="mmtaks433" 
+      - name: Terraform Init
+        working-directory: terraform
+        run: terraform init
 
-      - name: Deploy acr
-        if: ${{ github.event.inputs.stage == 'acr' }}
-        run: |
-          echo "Deploying acr..."
-          az deployment group create \
-            --resource-group "$RESOURCE_GROUP" \
-            --mode Incremental \
-            --template-file InfraProvisioning/templates/acr.bicep \
-            --parameters  acrName="mmtacr"
-      - name: Deploy Aks
-        if: ${{ github.event.inputs.stage == 'aks' }}
-        run: |
-          echo "Deploying aks..."
-          az deployment group create \
-            --resource-group "$RESOURCE_GROUP" \
-            --mode Incremental \
-            --template-file InfraProvisioning/templates/aks.bicep \
-            --parameters  acrName="mmtacr" \
-                          managedClusters_aks_cluster_name="mmt-aks" \
-                          windowsAdminPassword="maniteja@1234567" \
+      - name: Terraform Validate
+        working-directory: terraform
+        run: terraform validate
 
-      - name: Deploy trafficManager
-        if: ${{ github.event.inputs.stage == 'trafficManager' }}
-        run: |
-          echo "Deploying trafficManager..."
-          az deployment group create \
-            --resource-group "$RESOURCE_GROUP" \
-            --mode Incremental \
-            --template-file InfraProvisioning/templates/trafficmanager.bicep \
-            --parameters  trafficManagerName="learcloud"
-      - name: Deploy ApplicationGateway
-        if: ${{ github.event.inputs.stage == 'ApplicationGateway' }}
-        run: |
-          echo "Deploying Application Gateway..."
-          az deployment group create \
-            --resource-group "$RESOURCE_GROUP" \
-            --mode Incremental \
-            --template-file InfraProvisioning/templates/appgateway.bicep \
-            --parameters \
-                applicationGateways_appgw_name="appgw" \
-                appgwip="appgw-ip" \
-                appgwSubnetID="/subscriptions/20e67141-3faf-491a-bb15-d9df98bb8021/resourceGroups/sa-rg/providers/Microsoft.Network/virtualNetworks/aks-vnet/subnets/appgw-subnet" \
-                appgwumi="appgwumi" \
-                appgwkeyvault="appgw1kv" \
-                sslcertname="learncloud" \
-                frontendfqdn="mmtaks433.z16.web.core.windows.net" \
-                location="northeurope"
+      - name: Terraform Plan
+        working-directory: terraform
+        run: terraform plan -out=tfplan
 
-      - name: Deploy ApplicationGateway2
-        if: ${{ github.event.inputs.stage == 'ApplicationGateway2' }}
-        run: |
-          echo "Deploying Application Gateway..."
-          az deployment group create \
-            --resource-group "$RESOURCE_GROUP" \
-            --mode Incremental \
-            --template-file InfraProvisioning/templates/appgateway.bicep \
-            --parameters \
-                applicationGateways_appgw_name="appgw2" \
-                appgwip="appgw2-ip" \
-                appgwSubnetID="/subscriptions/20e67141-3faf-491a-bb15-d9df98bb8021/resourceGroups/sa-rg/providers/Microsoft.Network/virtualNetworks/appgw2/subnets/default" \
-                appgwumi="appgwumi" \
-                appgwkeyvault="appgw1kv" \
-                sslcertname="learncloud" \
-                frontendfqdn="mmtaks433.z16.web.core.windows.net" \
-                location="westeurope"
-                            
-                            
+      - name: Terraform Apply
+        if: github.event_name == 'workflow_dispatch'
+        working-directory: terraform
+        run: terraform apply -input=false -auto-approve tfplan

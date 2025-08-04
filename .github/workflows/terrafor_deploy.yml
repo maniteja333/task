@@ -1,0 +1,56 @@
+name: Terraform AKS Deploy
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write      # needed for OIDC
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: infra-${{ github.run_id }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+
+      - name: Azure login via OIDC (no client secret)
+        uses: azure/login@v1
+        with:
+          subscription-id: ${{ vars.SUBSCRIPTION_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+
+      - name: Export GitHub Variables / Secrets as TF_VARs
+        run: |
+          echo "TF_VAR_subscription_id=${{ vars.SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+          echo "TF_VAR_resource_group_name=${{ vars.RESOURCE_GROUP_NAME }}" >> $GITHUB_ENV
+          echo "TF_VAR_location=${{ vars.LOCATION }}" >> $GITHUB_ENV
+          echo "TF_VAR_aks_cluster_name=${{ vars.AKS_CLUSTER_NAME }}" >> $GITHUB_ENV
+          echo "TF_VAR_subnet_id=${{ vars.SUBNET_ID }}" >> $GITHUB_ENV
+          echo "TF_VAR_acr_name=${{ vars.ACR_NAME }}" >> $GITHUB_ENV
+          echo "TF_VAR_windows_admin_password=${{ secrets.WINDOWS_ADMIN_PASSWORD }}" >> $GITHUB_ENV
+
+      - name: Terraform Init
+        working-directory: terraform
+        run: terraform init
+
+      - name: Terraform Validate
+        working-directory: terraform
+        run: terraform validate
+
+      - name: Terraform Plan
+        working-directory: terraform
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        if: github.event_name == 'workflow_dispatch'
+        working-directory: terraform
+        run: terraform apply -input=false -auto-approve tfplan
