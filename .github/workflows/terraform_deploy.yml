@@ -54,11 +54,8 @@ jobs:
 
       - name: Import existing AKS cluster if missing
         run: |
-          if ! terraform state list | grep -q '^azurerm_kubernetes_cluster\.aks$'; then
-            terraform import azurerm_kubernetes_cluster.aks /subscriptions/20e67141-3faf-491a-bb15-d9df98bb8021/resourceGroups/sa-rg/providers/Microsoft.ContainerService/managedClusters/mmt-aks
-          else
-            echo "AKS cluster already in state, skipping import."
-          fi
+          terraform import azurerm_kubernetes_cluster.aks "/subscriptions/20e67141-3faf-491a-bb15-d9df98bb8021/resourceGroups/sa-rg/providers/Microsoft.ContainerService/managedClusters/mmt-aks"
+
 
       - name: Terraform Validate
         run: terraform validate
@@ -66,6 +63,6 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -out=tfplan
 
-      - name: Terraform Apply
-        if: github.event_name == 'workflow_dispatch'
-        run: terraform apply -input=false -auto-approve tfplan
+      # - name: Terraform Apply
+      #   if: github.event_name == 'workflow_dispatch'
+      #   run: terraform apply -input=false -auto-approve tfplan

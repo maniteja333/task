@@ -4,7 +4,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 4.33.0"
+      version = ">= 4.54.0"
     }
   }
 }
@@ -14,7 +14,7 @@ provider "azurerm" {
   subscription_id = var.subscription_id
 }
 
-# Existing ACR (for pull access)
+# Existing ACR
 data "azurerm_container_registry" "acr" {
   name                = var.acr_name
   resource_group_name = var.resource_group_name
@@ -27,17 +27,17 @@ resource "azurerm_kubernetes_cluster" "aks" {
   dns_prefix          = "${var.aks_cluster_name}-dns"
 
   default_node_pool {
-    name                    = "agentpool"
-    vm_size                 = var.node_vm_size
-    auto_scaling_enabled    = true
-    min_count               = var.node_pool_min_count
-    max_count               = var.node_pool_max_count
-    orchestrator_version    = var.k8s_version
-    os_disk_size_gb         = 128
-    os_disk_type            = "Managed"
-    max_pods                = 30
-    type                    = "VirtualMachineScaleSets"
-    kubelet_disk_type       = "OS"
+    name                 = "agentpool"
+    vm_size              = var.node_vm_size
+    auto_scaling_enabled = true
+    min_count            = var.node_pool_min_count
+    max_count            = var.node_pool_max_count
+    orchestrator_version = var.k8s_version
+    os_disk_size_gb      = 128
+    os_disk_type         = "Managed"
+    max_pods             = 30
+    type                 = "VirtualMachineScaleSets"
+    kubelet_disk_type    = "OS"
     upgrade_settings {
       max_surge = "10%"
     }
@@ -51,36 +51,33 @@ resource "azurerm_kubernetes_cluster" "aks" {
     type = "SystemAssigned"
   }
 
-  kubernetes_version = var.k8s_version
-
+  kubernetes_version                = var.k8s_version
   role_based_access_control_enabled = true
-
-  oidc_issuer_enabled       = true
-  workload_identity_enabled = true
+  oidc_issuer_enabled               = true
+  workload_identity_enabled         = true
 
   automatic_upgrade_channel = "patch"
   node_os_upgrade_channel   = "NodeImage"
 
   network_profile {
-    network_plugin    = "azure"
-    load_balancer_sku = "standard"
-    outbound_type     = "loadBalancer"
-
-    pod_cidr        = "10.244.0.0/16"
-    service_cidr    = "10.1.0.0/16"
-    dns_service_ip  = "10.1.0.10"
-    ip_versions     = ["IPv4"]
+    network_plugin       = "azure"
+    network_plugin_mode  = "overlay"
+    network_policy       = "none"           # requires provider >= 4.49.0
+    load_balancer_sku    = "standard"
 
     load_balancer_profile {
-      backend_pool_type         = "NodeIPConfiguration"
       managed_outbound_ip_count = 1
+      backend_pool_type         = "nodeIPConfiguration"
     }
+
+    pod_cidr       = "10.244.0.0/16"
+    service_cidr   = "10.1.0.0/16"
+    dns_service_ip = "10.1.0.10"
+    outbound_type  = "loadBalancer"              # requires provider >= 4.54.0
   }
 
   image_cleaner_enabled        = true
   image_cleaner_interval_hours = 168
-
-
 
   lifecycle {
     ignore_changes = [
@@ -89,12 +86,11 @@ resource "azurerm_kubernetes_cluster" "aks" {
     ]
   }
 
-  # Advanced autoscaler profile (mirroring your existing settings)
   auto_scaler_profile {
     balance_similar_node_groups                   = false
     daemonset_eviction_for_empty_nodes_enabled    = false
     daemonset_eviction_for_occupied_nodes_enabled = true
-    empty_bulk_delete_max                        = "10"
+    empty_bulk_delete_max                         = "10"
     expander                                      = "random"
     ignore_daemonsets_utilization_enabled         = false
     max_graceful_termination_sec                  = "600"
@@ -114,7 +110,6 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 }
 
-# Give the AKS system-assigned identity AcrPull on the ACR
 resource "azurerm_role_assignment" "acr_pull" {
   scope                = data.azurerm_container_registry.acr.id
   role_definition_name = "AcrPull"
@@ -126,15 +121,13 @@ resource "azurerm_role_assignment" "acr_pull" {
 }
 
 output "kube_admin_config_raw" {
-  description = "Admin kubeconfig (raw)"
-  value       = azurerm_kubernetes_cluster.aks.kube_admin_config_raw
-  sensitive   = true
+  value     = azurerm_kubernetes_cluster.aks.kube_admin_config_raw
+  sensitive = true
 }
 
 output "kube_user_config_raw" {
-  description = "User kubeconfig (raw)"
-  value       = azurerm_kubernetes_cluster.aks.kube_config_raw
-  sensitive   = true
+  value     = azurerm_kubernetes_cluster.aks.kube_config_raw
+  sensitive = true
 }
 
 output "aks_cluster_id" {

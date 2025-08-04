@@ -31,6 +31,20 @@ resource trafficManagerProfiles 'Microsoft.Network/trafficManagerProfiles@2022-0
               alwaysServe:'Disabled'
             }
           }
+         {
+        name: 'appgw2'
+        type: 'Microsoft.Network/trafficManagerProfiles/externalEndpoints'
+        properties: {
+          endpointStatus: 'Enabled'
+          endpointMonitorStatus: 'Degraded'
+          target: '98.64.98.244'
+          weight: 50
+          priority: 2
+          endpointLocation: 'Australia Central'
+          alwaysServe: 'Disabled'
+        }
+      }
+          
         ]
     trafficViewEnrollmentStatus: 'Disabled'
     maxReturn: 0
