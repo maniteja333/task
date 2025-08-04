@@ -1,0 +1,42 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cluster-app-alerts
+  namespace: monitoring
+spec:
+  groups:
+    - name: app-deployment-alerts
+      rules:
+        - alert: DeploymentReplicaMismatch
+          expr: kube_deployment_status_replicas_available < kube_deployment_spec_replicas
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Deployment {{ $labels.deployment }} has fewer available replicas than desired"
+            description: |
+              The deployment '{{ $labels.deployment }}' in namespace '{{ $labels.namespace }}' 
+              has fewer available replicas than specified in its spec for more than 2 minutes.
+              This could indicate pods failing to start or readiness probe failures.
+
+        - alert: PodRestartSpike
+          expr: increase(kube_pod_container_status_restarts_total[5m]) > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Pod restart detected in namespace {{ $labels.namespace }}"
+            description: |
+              One or more containers in pod '{{ $labels.pod }}' have restarted in the last 5 minutes.
+              Frequent restarts may indicate instability, crashes, or resource pressure.
+
+        - alert: HighCPUUsageDeployment
+          expr: sum by (deployment) (rate(container_cpu_usage_seconds_total{namespace=~".*"}[5m])) > 0.002
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High CPU usage for deployment {{ $labels.deployment }}"
+            description: |
+              Deployment '{{ $labels.deployment }}' has sustained CPU usage above 0.002 cores over the last 5 minutes.
+              Investigate whether there is unexpected load or a performance issue.

@@ -1,0 +1,17 @@
+grafana:
+  enabled: true
+
+alertmanager:
+  enabled: false
+
+prometheus:
+  prometheusSpec:
+    retention: 7d
+    scrapeInterval: 30s
+    replicas: 1
+
+kubeStateMetrics:
+  enabled: true
+
+nodeExporter:
+  enabled: true

@@ -1,0 +1,27 @@
+alertmanager:
+  alertmanagerSpec:
+    config:
+      global:
+        resolve_timeout: 5m
+      route:
+        group_by: ['alertname', 'deployment', 'namespace']
+        receiver: slack-notifications
+        repeat_interval: 10m
+      receivers:
+        - name: slack-notificationsupdate
+          slack_configs:
+            - api_url_file: /etc/alertmanager/secrets/slack_api_url
+              channel: '#all-kubernetes'
+              title: '*[{{ .CommonLabels.severity | toUpper }}] {{ .CommonLabels.alertname }}*'
+              text: >-
+                *Alert:* {{ .CommonLabels.alertname }}
+                *Severity:* {{ .CommonLabels.severity }}
+                *Deployment:* {{ .CommonLabels.deployment }}
+                *Namespace:* {{ .CommonLabels.namespace }}
+                *Summary:* {{ .CommonAnnotations.summary }}
+                *Description:* {{ .CommonAnnotations.description }}
+    extraSecretMounts:
+      - name: slack-api
+        secretName: alertmanager-slack1
+        mountPath: /etc/alertmanager/secrets
+        readOnly: true
