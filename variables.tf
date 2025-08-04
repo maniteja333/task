@@ -32,7 +32,7 @@ variable "node_pool_max_count" {
 
 variable "k8s_version" {
   type    = string
-  default = "1.31.10"
+  default = "1.31.8"
 }
 
 variable "subnet_id" {
