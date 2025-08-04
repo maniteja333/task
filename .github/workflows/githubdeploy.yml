@@ -9,10 +9,9 @@ on:
         default: 'd'
         type: choice
         options:
-          - d
-          - t
-          - a
-          - p
+          - green
+          - blue
+
       stage:
         description: 'Which stage to run?'
         type: choice
