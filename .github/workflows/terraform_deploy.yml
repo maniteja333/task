@@ -52,6 +52,14 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      - name: Import existing AKS cluster if missing
+        run: |
+          if ! terraform state list | grep -q '^azurerm_kubernetes_cluster\.aks$'; then
+            terraform import azurerm_kubernetes_cluster.aks /subscriptions/20e67141-3faf-491a-bb15-d9df98bb8021/resourceGroups/sa-rg/providers/Microsoft.ContainerService/managedClusters/mmt-aks
+          else
+            echo "AKS cluster already in state, skipping import."
+          fi
+
       - name: Terraform Validate
         run: terraform validate
 
