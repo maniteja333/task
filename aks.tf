@@ -62,8 +62,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
 network_profile {
   network_plugin       = "azure"
-  network_plugin_mode  = "overlay"
-  network_policy       = ""                    # matches actual state
+  network_plugin_mode  = "overlay"                  # matches actual state
   ip_versions          = ["IPv4"]
   load_balancer_sku    = "standard"
 
