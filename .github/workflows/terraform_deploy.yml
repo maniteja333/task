@@ -21,12 +21,16 @@ jobs:
         with:
           terraform_version: 1.5.0
 
-      - name: Azure login via OIDC (no client secret)
+      # - name: Azure login via OIDC (no client secret)
+      #   uses: azure/login@v1
+      #   with:
+      #     subscription-id: ${{ vars.SUBSCRIPTION_ID }}
+      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      #     client-id: ${{ vars.AZURE_CLIENT_ID }}
+      - name: Azure Login
         uses: azure/login@v1
         with:
-          subscription-id: ${{ vars.SUBSCRIPTION_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Export GitHub Variables / Secrets as TF_VARs
         run: |
