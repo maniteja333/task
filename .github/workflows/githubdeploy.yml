@@ -6,13 +6,12 @@ on:
       environment:
         description: 'Select environment to deploy'
         required: true
-        default: 'd'
+        default: 'green'
         type: choice
         options:
-          - d
-          - t
-          - a
-          - p
+          - green
+          - blue
+
       stage:
         description: 'Which stage to run?'
         type: choice
