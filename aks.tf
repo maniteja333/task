@@ -111,15 +111,6 @@ network_profile {
   }
 }
 
-resource "azurerm_role_assignment" "acr_pull" {
-  scope                = data.azurerm_container_registry.acr.id
-  role_definition_name = "AcrPull"
-  principal_id         = azurerm_kubernetes_cluster.aks.identity[0].principal_id
-
-  depends_on = [
-    azurerm_kubernetes_cluster.aks
-  ]
-}
 
 output "kube_admin_config_raw" {
   value     = azurerm_kubernetes_cluster.aks.kube_admin_config_raw
