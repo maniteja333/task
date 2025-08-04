@@ -9,8 +9,8 @@ on:
         default: 'green'
         type: choice
         options:
-          - green
-          - blue
+          - d
+          - p
 
       stage:
         description: 'Which stage to run?'
@@ -24,6 +24,7 @@ on:
           - trafficManager
           - ApplicationGateway
           - ApplicationGateway2
+          - storage2
         default: Infra&Network
 
 jobs:
@@ -93,8 +94,8 @@ jobs:
             --mode Incremental \
             --template-file InfraProvisioning/templates/storageaccount.bicep \
             --parameters  storageAccountName="mmtaks433" 
-      - name: Deploy Storage
-        if: ${{ github.event.inputs.stage == 'Storage' }}
+      - name: Deploy Storage2
+        if: ${{ github.event.inputs.stage == 'storage2' }}
         run: |
           echo "Deploying Storage..."
           az deployment group create \
