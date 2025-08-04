@@ -59,22 +59,23 @@ resource "azurerm_kubernetes_cluster" "aks" {
   automatic_upgrade_channel = "patch"
   node_os_upgrade_channel   = "NodeImage"
 
-  network_profile {
-    network_plugin       = "azure"
-    network_plugin_mode  = "overlay"
-    network_policy       = "none"           # requires provider >= 4.49.0
-    load_balancer_sku    = "standard"
+network_profile {
+  network_plugin       = "azure"
+  network_plugin_mode  = "overlay"
+  network_policy       = ""                    # matches actual state
+  ip_versions          = ["IPv4"]
+  load_balancer_sku    = "standard"
 
-    load_balancer_profile {
-      managed_outbound_ip_count = 1
-      backend_pool_type         = "nodeIPConfiguration"
-    }
-
-    pod_cidr       = "10.244.0.0/16"
-    service_cidr   = "10.1.0.0/16"
-    dns_service_ip = "10.1.0.10"
-    outbound_type  = "loadBalancer"              # requires provider >= 4.54.0
+  load_balancer_profile {
+    managed_outbound_ip_count = 1
+    backend_pool_type         = "NodeIPConfiguration"
   }
+
+  pod_cidr       = "10.244.0.0/16"
+  service_cidr   = "10.1.0.0/16"
+  dns_service_ip = "10.1.0.10"
+  outbound_type  = "loadBalancer"
+}
 
   image_cleaner_enabled        = true
   image_cleaner_interval_hours = 168

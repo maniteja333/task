@@ -52,10 +52,10 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Import existing AKS cluster if missing
+      - name: Import AKS
         run: |
+          terraform state list | grep azurerm_kubernetes_cluster.aks || \
           terraform import azurerm_kubernetes_cluster.aks "/subscriptions/20e67141-3faf-491a-bb15-d9df98bb8021/resourceGroups/sa-rg/providers/Microsoft.ContainerService/managedClusters/mmt-aks"
-
 
       - name: Terraform Validate
         run: terraform validate
