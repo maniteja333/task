@@ -2,15 +2,26 @@ name: Terraform AKS Deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: "Select environment to deploy"
+        required: true
+        default: "d"
+        type: choice
+        options:
+          - d
+          - t
+          - a
+          - p
 
 permissions:
-  id-token: write      # needed for OIDC
+  id-token: write
   contents: read
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: infra-${{ github.run_id }}
+    environment: vpps-${{ github.event.inputs.environment }}
 
     steps:
       - name: Checkout repository
@@ -21,12 +32,7 @@ jobs:
         with:
           terraform_version: 1.5.0
 
-      # - name: Azure login via OIDC (no client secret)
-      #   uses: azure/login@v1
-      #   with:
-      #     subscription-id: ${{ vars.SUBSCRIPTION_ID }}
-      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-      #     client-id: ${{ vars.AZURE_CLIENT_ID }}
+      # Azure login using Service Principal credentials
       - name: Azure Login
         uses: azure/login@v1
         with:
@@ -40,21 +46,18 @@ jobs:
           echo "TF_VAR_aks_cluster_name=${{ vars.AKS_CLUSTER_NAME }}" >> $GITHUB_ENV
           echo "TF_VAR_subnet_id=${{ vars.SUBNET_ID }}" >> $GITHUB_ENV
           echo "TF_VAR_acr_name=${{ vars.ACR_NAME }}" >> $GITHUB_ENV
+          echo "TF_VAR_windows_admin_username=${{ vars.WINDOWS_ADMIN_USERNAME }}" >> $GITHUB_ENV
           echo "TF_VAR_windows_admin_password=${{ secrets.WINDOWS_ADMIN_PASSWORD }}" >> $GITHUB_ENV
 
       - name: Terraform Init
-        working-directory: terraform
         run: terraform init
 
       - name: Terraform Validate
-        working-directory: terraform
         run: terraform validate
 
       - name: Terraform Plan
-        working-directory: terraform
         run: terraform plan -out=tfplan
 
       - name: Terraform Apply
         if: github.event_name == 'workflow_dispatch'
-        working-directory: terraform
         run: terraform apply -input=false -auto-approve tfplan
