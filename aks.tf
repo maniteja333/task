@@ -39,6 +39,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     max_pods             = 30
     type                 = "VirtualMachineScaleSets"
     kubelet_disk_type    = "OS"
+    temporary_name_for_rotation   = "tempnodepool"
     upgrade_settings {
       max_surge = "10%"
     }
