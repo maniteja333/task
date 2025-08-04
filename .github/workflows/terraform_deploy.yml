@@ -44,7 +44,7 @@ jobs:
           echo "TF_VAR_resource_group_name=${{ vars.RESOURCE_GROUP_NAME }}" >> $GITHUB_ENV
           echo "TF_VAR_location=${{ vars.LOCATION }}" >> $GITHUB_ENV
           echo "TF_VAR_aks_cluster_name=${{ vars.AKS_CLUSTER_NAME }}" >> $GITHUB_ENV
-          echo "TF_VAR_subnet_id=${{ vars.SUBNET_ID }}" >> $GITHUB_ENV
+          echo "TF_VAR_subnet_id=$(echo "${{ vars.SUBNET_ID }}" | tr -d '\r')" >> $GITHUB_ENV
           echo "TF_VAR_acr_name=${{ vars.ACR_NAME }}" >> $GITHUB_ENV
           echo "TF_VAR_windows_admin_username=${{ vars.WINDOWS_ADMIN_USERNAME }}" >> $GITHUB_ENV
           echo "TF_VAR_windows_admin_password=${{ secrets.WINDOWS_ADMIN_PASSWORD }}" >> $GITHUB_ENV
