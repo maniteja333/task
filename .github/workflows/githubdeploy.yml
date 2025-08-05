@@ -62,7 +62,7 @@ jobs:
                          acrName="mmtacr" \
                          storageAccountName="mmtaks433" \
                          managedClusters_aks_cluster_name="mmt-aks" \
-                         windowsAdminPassword="maniteja@1234567" 
+                         windowsAdminPassword=${{ secrets.WINDOWS_ADMIN_PASSWORD }} 
                          trafficManagerName="learcloud"
                           applicationGateways_appgw_name="appgw" \
                           appgwpip="appgw-pip" \
@@ -123,7 +123,7 @@ jobs:
             --template-file InfraProvisioning/templates/aks.bicep \
             --parameters  acrName="mmtacr" \
                           managedClusters_aks_cluster_name="mmt-aks" \
-                          windowsAdminPassword="maniteja@1234567" \
+                          windowsAdminPassword=${{ secrets.WINDOWS_ADMIN_PASSWORD }} \
 
       - name: Deploy trafficManager
         if: ${{ github.event.inputs.stage == 'trafficManager' }}
